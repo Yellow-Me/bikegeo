@@ -1,0 +1,124 @@
+html /* general settings*/
+{
+    height:99%;
+    width:100%;
+    background-color:grey;
+    background-image:url('bg.jpg');
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: 110% 110%;
+    font-family:helvetica, arial;
+
+}
+
+
+body
+{
+    display:block;
+    position: relative;
+    margin-left:1%;
+    margin-top:1%;
+    height: 95%;
+    max-width:1300px;
+    background-color:#F0F0F0 ;
+    overflow:scroll;
+}
+
+div.body
+{
+    height: 95%;
+    overflow:auto;
+}
+
+div.disclaimer
+{
+    position:absolute; 
+    left: 10px; 
+    top: 320px; 
+    max-width:610px;
+    font-size:12px;
+}
+
+div.footer
+{
+    display:block;
+    position: absolute;
+    bottom:3%;
+    width:100%;
+    height:5%;
+    min-height:2em;
+}
+div.footer p.cr /* copyright*/
+{
+    vertical-align:bottom;
+    text-align:right;
+    font-size:12px;
+    margin-right:1%;
+    float:right;
+
+}
+
+div.footer p.credits /* credits for tools*/
+{
+    vertical-align:bottom;
+    text-align:left;
+    font-size:12px;
+    margin-left:1%;
+    float:left;
+
+}
+
+div.BikeCanvas /* drawing area + help button */
+{
+    position:relative;
+    height:350px;
+    width:610px;
+    float:left;
+}
+
+canvas.bike {
+    position:absolute; 
+    left: 10px; 
+    top: 10px; 
+}
+
+div.BikeData /* div for bike input table */
+{
+    float:left;
+    margin-top:1%;
+    position:relative;
+    height:95%;
+    overflow:auto;
+    font-size:14px;
+}
+
+table.BikeInputTable
+{
+    text-align:right;
+    border-collapse: collapse;
+    margin:15px;
+}
+
+
+table.BikeInputTable td.output
+{
+    border:1px dotted grey;
+    font-weight:bold;
+}
+
+table.BikeInputTable th.label /* Input table labels, it's enough to set width for header */
+{
+    min-width:10em;
+}
+
+table.BikeInputTable tr.divider{ /* divider rows*/
+    border-top: 1px solid black;
+}
+
+table.BikeInputTable td.input{
+    border:1px dotted grey;
+}
+
+input {
+    text-align:right;
+}

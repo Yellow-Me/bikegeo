@@ -1,0 +1,170 @@
+<!--  This file is part of BikeGeo.
+
+    BikeGeo is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License version 3 as 
+    published by the Free Software Foundation.
+
+    BikeGeo is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with BikeGeo.  If not, see <http://www.gnu.org/licenses/>. 
+
+  Copyright 2014 Juha Virtakoivu -->
+
+<!DOCTYPE html>
+<meta charset="UTF-8">
+</meta>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="bikegeo.css">
+    <title>Bikegeo.net</title>
+    <meta name="keywords" content="bike, bicycle, stack, reach, calculator, geometry ">
+    <meta name="description" content="Visual tool for comparing bicycle geometries. Calculates also stack and reach values for the geometries.">
+  </head> 
+  <body>
+    <!-- hidden help image-->
+    <div style="visibility:hidden;height:0px">
+      <img id="helpPng" src="help.png" >
+    </div>
+    <div class = "body">
+      <div class = "BikeCanvas" >
+	<canvas id="bg" width="600" height="300" class="bike"
+		style="z-index: 0;     background-color:#F8F8F8;">
+	</canvas> 
+	<canvas id="bike1"  width="600" height="300" class="bike"
+		style="z-index: 1;">
+	</canvas>
+	<canvas id="bike2" width="600" height="300" class="bike"
+		style="z-index: 2;">
+	</canvas>
+	<canvas id="bike3" width="600" height="300" class="bike"
+		style="z-index: 3;">
+	</canvas>
+	<canvas id="help" width="600" height="300" class="bike"
+		style="z-index: 4;">
+	</canvas>
+	<div class="disclaimer">
+	  <a href="#" id="helpLink"> Toggle help </a> <BR>
+	  The calculated reach and stack values are only approximate values. The bike manufacturer should be contacted, if exact values are needed.
+	</div>
+      </div>
+      <script src="./bike.js"></script>
+      <!-- "virtual" dedicated forms for the bikes-->
+      <form id="RedBikeForm" metdod="GET"></form>
+      <form id="GreBikeForm" metdod="GET"></form>
+      <form id="BluBikeForm" metdod="GET"></form>
+      <div class="BikeData">
+	<form NAME="BikesData" metdod="GET">
+	  <table class="BikeInputTable"> 
+	    <thead>
+	      <tr><th class="label">Bike</th>
+		<th class="input"><input type="text" NAME="name" size="10" value="Red bike"   form="RedBikeForm" style="color:#ff0000;" onChange="redBike.saveName(RedBikeForm)"></th>
+		<th class="input"><input type="text" NAME="name" size="10" value="Green bike" form="GreBikeForm" style="color:#009900;" onChange="greBike.saveName(GreBikeForm)"></th>
+		<th class="input"><input type="text" NAME="name" size="10" value="Blue bike"  form="BluBikeForm" style="color:#0000ff;" onChange="bluBike.saveName(BluBikeForm)"></th></tr>
+	    </thead>
+	    <tbody>
+	      <tr><td>Wheel size(1)</td>  
+		<td class="input"><input type="number" NAME="ws"        value="622"     min="0" max="700" form="RedBikeForm" onChange="redBike.update(RedBikeForm)">     </td>
+		<td class="input"><input type="number" NAME="ws"        value="0"     min="0" max="700" form="GreBikeForm" onChange="greBike.update(GreBikeForm)">     </td>
+		<td class="input"><input type="number" NAME="ws"        value="0"    min="0" max="700" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)">     </td></tr>
+	      <tr><td>BB drop(2)         </td>  
+		<td class="input"><input type="number" NAME="bbDrop"    value="69"      min="0" max="999" form="RedBikeForm" onChange="redBike.updateStack(RedBikeForm)"></td>
+		<td class="input"><input type="number" NAME="bbDrop"    value="0"      min="0" max="999" form="GreBikeForm" onChange="greBike.updateStack(GreBikeForm)"></td>
+		<td class="input"><input type="number" NAME="bbDrop"    value="0"     min="0" max="999" form="BluBikeForm" onChange="bluBike.updateStack(BluBikeForm)"></td></tr> 
+	      <tr><td>Fork lenght(3)     </td>  
+		<td class="input"><input type="number" NAME="fl"        value="396"     min="0" max="999" form="RedBikeForm" onChange="redBike.updateStack(RedBikeForm)"></td>
+		<td class="input"><input type="number" NAME="fl"        value="0"     min="0" max="999" form="GreBikeForm" onChange="greBike.updateStack(GreBikeForm)"></td>
+		<td class="input"><input type="number" NAME="fl"        value="0"    min="0" max="999" form="BluBikeForm" onChange="bluBike.updateStack(BluBikeForm)"></td></tr> 
+	      <tr><td>Fork offset(4)      </td>  
+		<td class="input"><input type="number" NAME="fo"        value="47"      min="0" max="999" form="RedBikeForm" onChange="redBike.updateStack(RedBikeForm)"></td>
+		<td class="input"><input type="number" NAME="fo"        value="0"      min="0" max="999" form="GreBikeForm" onChange="greBike.updateStack(GreBikeForm)"></td>
+		<td class="input"><input type="number" NAME="fo"        value="0"     min="0" max="999" form="BluBikeForm" onChange="bluBike.updateStack(BluBikeForm)"></td></tr> 
+	      <tr><td>Top tube lenght(5) </td>  
+		<td class="input"><input type="number" NAME="ttl"       value="530"     min="0" max="999" form="RedBikeForm" onChange="redBike.updateReach(RedBikeForm)"></td>
+		<td class="input"><input type="number" NAME="ttl"       value="0"     min="0" max="999" form="GreBikeForm" onChange="greBike.updateReach(GreBikeForm)"></td>
+		<td class="input"><input type="number" NAME="ttl"       value="0"    min="0" max="999" form="BluBikeForm" onChange="bluBike.updateReach(BluBikeForm)"></td></tr> 
+	      <tr><td>Head tube lenght(6)</td>  
+		<td class="input"><input type="number" NAME="htl"       value="125"     min="0" max="999" form="RedBikeForm" onChange="redBike.updateStack(RedBikeForm)"></td>
+		<td class="input"><input type="number" NAME="htl"       value="0"     min="0" max="999" form="GreBikeForm" onChange="greBike.updateStack(GreBikeForm)"></td>
+		<td class="input"><input type="number" NAME="htl"       value="0"    min="0" max="999" form="BluBikeForm" onChange="bluBike.updateStack(BluBikeForm)"></td></tr> 
+	      <tr><td>Head tube angle(7) </td>  
+		<td class="input"><input type="number" NAME="hta" step=".1" value="71"  min="-90" max="90"  form="RedBikeForm" onChange="redBike.updateStack(RedBikeForm)"></td>
+		<td class="input"><input type="number" NAME="hta" step=".1" value="0"  min="-90" max="90"  form="GreBikeForm" onChange="greBike.updateStack(GreBikeForm)"></td>
+		<td class="input"><input type="number" NAME="hta" step=".1" value="0"  min="-90" max="90"  form="BluBikeForm" onChange="bluBike.updateStack(BluBikeForm)"></td></tr> 
+	      <tr><td>Seat tube angle(8) </td>  
+		<td class="input"><input type="number" NAME="sta" step=".1" value="74"    min="-90" max="90"  form="RedBikeForm" onChange="redBike.updateReach(RedBikeForm)"></td>
+		<td class="input"><input type="number" NAME="sta" step=".1" value="0"  min="-90" max="90"  form="GreBikeForm" onChange="greBike.updateReach(GreBikeForm)"></td>
+		<td class="input"><input type="number" NAME="sta" step=".1" value="0"  min="-90" max="90"  form="BluBikeForm" onChange="bluBike.updateReach(BluBikeForm)"></td></tr> 
+	      <tr><td>Chainstay lenght(9)</td>  
+		<td class="input"><input type="number" NAME="csl"       value="440"     min="0" max="999" form="RedBikeForm" onChange="redBike.update(RedBikeForm)">	  </td>
+		<td class="input"><input type="number" NAME="csl"       value="0"     min="0" max="999" form="GreBikeForm" onChange="greBike.update(GreBikeForm)">	  </td>
+		<td class="input"><input type="number" NAME="csl"       value="0"    min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)">     </td></tr>      
+	      <tr><td>Spacers height(10)</td>  
+		<td class="input"><input type="number" NAME="spacers"   value="35"      min="0" max="999" form="RedBikeForm" onChange="redBike.updateStack(RedBikeForm)"></td>
+		<td class="input"><input type="number" NAME="spacers"   value="0"      min="0" max="999" form="GreBikeForm" onChange="greBike.updateStack(GreBikeForm)"></td>
+		<td class="input"><input type="number" NAME="spacers"   value="0"     min="0" max="999" form="BluBikeForm" onChange="bluBike.updateStack(BluBikeForm)"></td></tr>      
+	      <tr><td>Stem lenght(11)</td>  
+ 		<td class="input"><input type="number" NAME="sl"        value="90"      min="0" max="999" form="RedBikeForm" onChange="redBike.updateStack(RedBikeForm)"></td>
+ 		<td class="input"><input type="number" NAME="sl"        value="0"      min="0" max="999" form="GreBikeForm" onChange="greBike.updateStack(GreBikeForm)"></td>
+		<td class="input"><input type="number" NAME="sl"        value="0"     min="0" max="999" form="BluBikeForm" onChange="bluBike.updateStack(BluBikeForm)"></td></tr>      
+	      <tr><td>Stem angle(12)</td>  
+		<td class="input"><input type="number" NAME="sa"        value="-9"      min="-90" max="90" form="RedBikeForm" onChange="redBike.updateStack(RedBikeForm)"></td>      
+		<td class="input"><input type="number" NAME="sa"        value="0"      min="-90" max="90" form="GreBikeForm" onChange="greBike.updateStack(GreBikeForm)"></td>      
+		<td class="input"><input type="number" NAME="sa"        value="0"      min="-90" max="90" form="BluBikeForm" onChange="bluBike.updateStack(BluBikeForm)"></td></tr>          
+	    </tbody>
+	    <tfoot>
+	      <tr><td>Wheelbase(13)</td>
+		<td class="output"><output type="number" NAME="wb"        form="RedBikeForm"></td>
+		<td class="output"><output type="number" NAME="wb"        form="GreBikeForm"></td>
+		<td class="output"><output type="number" NAME="wb"        form="BluBikeForm"></td></tr>
+	      <tr class="divider"><td>Reach(frame)(14)</td>
+		<td class="output"><output type="number" NAME="reach"     form="RedBikeForm"></td>
+		<td class="output"><output type="number" NAME="reach"     form="GreBikeForm"></td>
+		<td class="output"><output type="number" NAME="reach"     form="BluBikeForm"></td></tr>
+	      <tr><td>Stack(frame)(15)</td>
+		<td class="output"><output type="number" NAME="stack"     form="RedBikeForm"></td>
+		<td class="output"><output type="number" NAME="stack"     form="GreBikeForm"></td>
+		<td class="output"><output type="number" NAME="stack"     form="BluBikeForm"></td></tr>
+	      <tr class="divider"><td>Reach(spacers)(16)</td>
+		<td class="output"><output type="number" NAME="reachWspc" form="RedBikeForm"></td>
+		<td class="output"><output type="number" NAME="reachWspc" form="GreBikeForm"></td>
+		<td class="output"><output type="number" NAME="reachWspc" form="BluBikeForm"></td></tr>
+	      <tr><td>Stack(spacers)(17)</td>
+		<td class="output"><output type="number" NAME="stackWspc" form="RedBikeForm"></td>
+		<td class="output"><output type="number" NAME="stackWspc" form="GreBikeForm"></td>
+		<td class="output"><output type="number" NAME="stackWspc" form="BluBikeForm"></td></tr>
+	      <tr class="divider"><td>Reach(stem)(18)</td>
+		<td class="output"><output type="number" NAME="reachWstm" form="RedBikeForm"></td>
+		<td class="output"><output type="number" NAME="reachWstm" form="GreBikeForm"></td>
+		<td class="output"><output type="number" NAME="reachWstm" form="BluBikeForm"></td></tr>
+	      <tr><td>Stack(stem)(19)</td>
+		<td class="output"><output type="number" NAME="stackWstm" form="RedBikeForm"></td>
+		<td class="output"><output type="number" NAME="stackWstm" form="GreBikeForm"></td>
+		<td class="output"><output type="number" NAME="stackWstm" form="BluBikeForm"></td></tr>
+	    </tfoot>
+	  </table>
+	</form>
+      </div>
+      <script src="./init.js"></script>
+      <div class="footer">
+	<p class="credits"> This web site was developed with free open source tools: 
+	  <a href="http://www.gnu.org/software/emacs/"> Emacs</a>,
+	  <a href="https://wiki.gnome.org/Apps/Dia">Dia</a>,  <BR>
+	  <a href="https://wiki.debian.org/Iceweasel"> Iceweasel</a>
+	  <a href="https://www.mozilla.org/firefox">(Firefox)</a>,  
+	  <a href="https://wiki.gnome.org/Apps/Web">Epiphany</a> and
+	  <a href="http://www.gimp.org/">GIMP</a>
+	  packaged by 
+	  <a href="https://www.debian.org/">Debian project</a>.</p>
+
+	<p class="cr">Copyright 2014 <a href="mailto:juha@bikegeo.net">Juha Virtakoivu</a> <BR>
+	The source code is available at <a href="https://github.com/Yellow-Me/bikegeo" </a>GitHub</p>
+      </div>
+    </div>
+  </body>
+
+</html>
+
