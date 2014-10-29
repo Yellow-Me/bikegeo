@@ -39,6 +39,15 @@ div.disclaimer
     font-size:12px;
 }
 
+div.Ads
+{
+    position:absolute; 
+    left: 10px; 
+    top: 400px; 
+    max-width:610px;
+    height:150px;
+}    
+
 div.footer
 {
     display:block;
@@ -68,10 +77,10 @@ div.footer p.credits /* credits for tools*/
 
 }
 
-div.BikeCanvas /* drawing area + help button */
+div.LeftColumn /* drawing area + help button */
 {
     position:relative;
-    height:350px;
+    height:550px;
     width:610px;
     float:left;
 }
@@ -82,7 +91,7 @@ canvas.bike {
     top: 10px; 
 }
 
-div.BikeData /* div for bike input table */
+div.RightColumn /* div for bike input table */
 {
     float:left;
     margin-top:1%;
