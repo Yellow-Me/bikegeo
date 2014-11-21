@@ -18,7 +18,7 @@
 var BB = [270,220];
 var mm2px = 0.3;
 var canvasWidth = 600;
-var canvasHeight = 300;
+var canvasHeight = 320;
 var numOfDec = 0;
 
 // Help toggle function
