@@ -39,15 +39,6 @@ div.disclaimer
     font-size:12px;
 }
 
-div.Ads
-{
-    position:absolute; 
-    left: 10px; 
-    top: 420px; 
-    max-width:610px;
-    height:150px;
-}    
-
 div.footer
 {
     display:block;
