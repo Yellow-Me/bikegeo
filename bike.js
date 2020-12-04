@@ -98,6 +98,13 @@ function Bike (color,cvs, form) {
 		return (this.frontAxle() - this.rearAxle());
 	}
 
+	this.frontCenter = function() {
+		return Math.sqrt(this.bbDrop**2 + this.frontAxle()**2);
+	}
+	this.rearCenter = function() {
+		return Math.sqrt(this.csl**2 - this.bbDrop**2);
+	}
+
 	this.reach = function() {
 		return this.ttl - this.stack() * Math.tan(deg2rad(90 - this.sta));
 	}
@@ -259,6 +266,8 @@ function Bike (color,cvs, form) {
 		this.drawBike();
 		// update wheelbase, which is calculated in drawing function
 		form.wb.value = (this.wheelbase()).toFixed(numOfDec);
+		form.frontCenter.value = this.frontCenter().toFixed(numOfDec);
+		form.rearCenter.value = this.rearCenter().toFixed(numOfDec);
 	}
 
 	// update callback for bike name
