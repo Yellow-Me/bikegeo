@@ -27,23 +27,18 @@ const ctxh = ch.getContext("2d");
 let helpTogg = 0;
 const ph = document.getElementById("helpPng");
 
-window.onload = function ()
-{
-    // set onClick callback to help link
+window.onload = function () {
+	// set onClick callback to help link
 	const hlpLnk = document.getElementById("helpLink");
-	hlpLnk.onclick = function ()
-    {
-	if (helpTogg)
-	{
-	    ctxh.clearRect(0,0,canvasWidth,canvasHeight);
-	    helpTogg = 0;
+	hlpLnk.onclick = function () {
+		if (helpTogg) {
+			ctxh.clearRect(0, 0, canvasWidth, canvasHeight);
+			helpTogg = 0;
+		} else {
+			helpTogg = 1;
+			ctxh.drawImage(ph, 0, 0);
+		}
 	}
-	else
-	{
-	    helpTogg = 1;
-	    ctxh.drawImage(ph,0,0);
-	}
-    }
 }
 
 function deg2rad(deg) {

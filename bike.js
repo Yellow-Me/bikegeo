@@ -22,8 +22,7 @@ function Bike (color,cvs, form) {
 	this.context = cvs.getContext("2d");
 	this.canvas = cvs;
 
-	// load bike data from local storage
-	if (typeof (Storage) !== "undefined") {
+	this.loadSavedData = function() {
 		// if something isn't stored, form defaults are used
 		if (localStorage.getItem(this.color + "name")) {
 			form.name.value = localStorage.getItem(this.color + "name");
@@ -66,9 +65,15 @@ function Bike (color,cvs, form) {
 		if (localStorage.getItem(this.color + "csl")) {
 			form.csl.value = Number(localStorage.getItem(this.color + "csl"));
 		}
-		// else no local storage available, form defaults will be used
-
-
+		if (localStorage.getItem(this.color + "tireSize")) {
+			form.tireSize.value = Number(localStorage.getItem(this.color + "tireSize"));
+		}
+		if (localStorage.getItem(this.color + "crankLength")) {
+			form.crankLength.value = Number(localStorage.getItem(this.color + "crankLength"));
+		}
+		if (localStorage.getItem(this.color + "toeLength")) {
+			form.toeLength.value = Number(localStorage.getItem(this.color + "toeLength"));
+		}
 	}
 
 	/* Geometry calculations */
@@ -118,10 +123,10 @@ function Bike (color,cvs, form) {
 	}
 
 	this.mechanicalTrail = function () {
-		return this.ws / 2 * Math.sin(deg2rad(90 - this.hta)) - this.fo;
+		return this.wheelAndTireRadius() * Math.sin(deg2rad(90 - this.hta)) - this.fo;
 	}
 	this.groundTrail = function() {
-		return this.ws / 2 / Math.tan(deg2rad(this.hta)) - this.fo / Math.sin(deg2rad(this.hta));
+		return this.wheelAndTireRadius() / Math.tan(deg2rad(this.hta)) - this.fo / Math.sin(deg2rad(this.hta));
 	}
 	this.rearWheelTrail = function () {
 		return this.wheelbase() * Math.sin(deg2rad(this.hta)) + this.mechanicalTrail();
@@ -280,9 +285,15 @@ function Bike (color,cvs, form) {
 			localStorage.setItem(this.color + "ttl", this.ttl);
 			localStorage.setItem(this.color + "ws", this.ws);
 			localStorage.setItem(this.color + "csl", this.csl);
-
-
+			localStorage.setItem(this.color + "tireSize", this.tireSize);
+			localStorage.setItem(this.color + "crankLength", this.crankLength);
+			localStorage.setItem(this.color + "toeLength", this.toeLength);
 		}
 		// else do nothing
+	}
+	
+	// load bike data from local storage
+	if (typeof (Storage) !== "undefined") {
+		this.loadSavedData();
 	}
 }
