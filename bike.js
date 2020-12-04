@@ -291,7 +291,7 @@ function Bike (color,cvs, form) {
 		}
 		// else do nothing
 	}
-	
+
 	// load bike data from local storage
 	if (typeof (Storage) !== "undefined") {
 		this.loadSavedData();
