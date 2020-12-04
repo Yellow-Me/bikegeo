@@ -3,7 +3,7 @@ html /* general settings*/
     height:99%;
     width:100%;
     background-color:grey;
-    background-image:url('bg.jpg');
+    /*background-image:url('bg.jpg');*/
     background-repeat: no-repeat;
     background-position: 0 0;
     background-size: 110% 110%;
