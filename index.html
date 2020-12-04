@@ -15,7 +15,7 @@
 
   Copyright 2014 Juha Virtakoivu -->
 
-
+<html lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
   <meta name="keywords" content="stack, reach, bike, bicycle"> 
@@ -25,7 +25,7 @@
 </head> 
 <body>
   <!-- hidden help image-->
-  <div style="visibility:hidden;height:0px">
+  <div style="visibility:hidden;height:0">
     <img id="helpPng" src="help.png" alt="Error in help function">
   </div>
   <div class = "body">
@@ -69,6 +69,10 @@
 	      <td class="input"><input type="number" name="ws"        value="622"     min="0" max="700" form="RedBikeForm" onChange="redBike.update(RedBikeForm)">     </td>
 	      <td class="input"><input type="number" name="ws"        value="0"     min="0" max="700" form="GreBikeForm" onChange="greBike.update(GreBikeForm)">     </td>
 	      <td class="input"><input type="number" name="ws"        value="0"    min="0" max="700" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)">     </td></tr>
+		<tr><td>Tire size(1.5)</td>
+			<td class="input"><input type="number" name="tireSize" value="25"     min="0" max="200" form="RedBikeForm" onChange="redBike.update(RedBikeForm)">     </td>
+			<td class="input"><input type="number" name="tireSize" value="0"     min="0" max="200" form="GreBikeForm" onChange="greBike.update(GreBikeForm)">     </td>
+			<td class="input"><input type="number" name="tireSize" value="0"    min="0" max="200" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)">     </td></tr>
 	    <tr><td>BB drop(2)         </td>  
 	      <td class="input"><input type="number" name="bbDrop"    value="69"      min="0" max="999" form="RedBikeForm" onChange="redBike.updateStack(RedBikeForm)"></td>
 	      <td class="input"><input type="number" name="bbDrop"    value="0"      min="0" max="999" form="GreBikeForm" onChange="greBike.updateStack(GreBikeForm)"></td>
@@ -119,27 +123,39 @@
 	      <td class="output"><output name="wb"        form="RedBikeForm"></output></td>
 	      <td class="output"><output name="wb"        form="GreBikeForm"></output></td>
 	      <td class="output"><output name="wb"        form="BluBikeForm"></output></td></tr>
-	    <tr class="divider"><td>Reach(frame)(14)</td>
+		<tr><td>Toe Overlap(14)</td>
+			<td class="output"><output name="toeOvlp" form="RedBikeForm"></output></td>
+			<td class="output"><output name="toeOvlp" form="GreBikeForm"></output></td>
+			<td class="output"><output name="toeOvlp" form="BluBikeForm"></output></td></tr>
+		<tr><td>Ground Trail(15)</td>
+			<td class="output"><output name="groundTrail" form="RedBikeForm"></output></td>
+			<td class="output"><output name="groundTrail" form="GreBikeForm"></output></td>
+			<td class="output"><output name="groundTrail" form="BluBikeForm"></output></td></tr>
+		<tr><td>Mechanical Trail(16)</td>
+			<td class="output"><output name="mechTrail" form="RedBikeForm"></output></td>
+			<td class="output"><output name="mechTrail" form="GreBikeForm"></output></td>
+			<td class="output"><output name="mechTrail" form="BluBikeForm"></output></td></tr>
+	    <tr class="divider"><td>Reach(frame)(17)</td>
 	      <td class="output"><output name="reach"     form="RedBikeForm"></output></td>
 	      <td class="output"><output name="reach"     form="GreBikeForm"></output></td>
 	      <td class="output"><output name="reach"     form="BluBikeForm"></output></td></tr>
-	    <tr><td>Stack(frame)(15)</td>
+	    <tr><td>Stack(frame)(18)</td>
 	      <td class="output"><output name="stack"     form="RedBikeForm"></output></td>
 	      <td class="output"><output name="stack"     form="GreBikeForm"></output></td>
 	      <td class="output"><output name="stack"     form="BluBikeForm"></output></td></tr>
-	    <tr class="divider"><td>Reach(spacers)(16)</td>
+	    <tr class="divider"><td>Reach(spacers)(19)</td>
 	      <td class="output"><output name="reachWspc" form="RedBikeForm"></output></td>
 	      <td class="output"><output name="reachWspc" form="GreBikeForm"></output></td>
 	      <td class="output"><output name="reachWspc" form="BluBikeForm"></output></td></tr>
-	    <tr><td>Stack(spacers)(17)</td>
+	    <tr><td>Stack(spacers)(20)</td>
 	      <td class="output"><output name="stackWspc" form="RedBikeForm"></output></td>
 	      <td class="output"><output name="stackWspc" form="GreBikeForm"></output></td>
 	      <td class="output"><output name="stackWspc" form="BluBikeForm"></output></td></tr>
-	    <tr class="divider"><td>Reach(stem)(18)</td>
+	    <tr class="divider"><td>Reach(stem)(21)</td>
 	      <td class="output"><output name="reachWstm" form="RedBikeForm"></output></td>
 	      <td class="output"><output name="reachWstm" form="GreBikeForm"></output></td>
 	      <td class="output"><output name="reachWstm" form="BluBikeForm"></output></td></tr>
-	    <tr><td>Stack(stem)(19)</td>
+	    <tr><td>Stack(stem)(22)</td>
 	      <td class="output"><output name="stackWstm" form="RedBikeForm"></output></td>
 	      <td class="output"><output name="stackWstm" form="GreBikeForm"></output></td>
 	      <td class="output"><output name="stackWstm" form="BluBikeForm"></output></td></tr>
@@ -159,12 +175,11 @@
 	packaged by 
 	<a href="https://www.debian.org/">Debian project</a>.</p>
 
-      <p class="cr">Copyright 2014<a href="mailto:juha@bikegeo.net">Juha Virtakoivu</a> 
+      <p class="cr">Copyright 2014<a href="mailto:juha@bikegeo.net">Juha Virtakoivu</a> , 2020 Scott Phillips
 	<BR>
-	The source code is available at <a href="https://github.com/Yellow-Me/bikegeo"></a>GitHub</p>
+	The source code is available at <a href="https://github.com/scott-phillips-ah/bikegeo"></a>GitHub</p>
     </div>
   </div>
 </body>
 
 </html>
-
