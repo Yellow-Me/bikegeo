@@ -97,7 +97,7 @@ function Bike (color,cvs, form) {
 	this.wheelbase = function() {
 		return (this.frontAxle() - this.rearAxle());
 	}
-
+	
 	this.frontCenter = function() {
 		return Math.sqrt(this.bbDrop**2 + this.frontAxle()**2);
 	}
@@ -144,7 +144,6 @@ function Bike (color,cvs, form) {
 	this.toeOverlap = function() {
 		return Math.max(0, this.crankLength + this.wheelAndTireRadius() - Math.sqrt((this.frontAxle() - this.toeLength)**2 + this.bbDrop**2));
 	}
-
 	this.drawBike = function () {
 		//this.canvas.clearRect(0,0, this.canvas.width, this.canvas.height);
 		this.canvas.width = this.canvas.width;
