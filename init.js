@@ -46,22 +46,23 @@ window.onload = function ()
     }
 }
 
+function deg2rad(deg) {
+	return deg / 180 * Math.PI;
+}
+function rad2deg(rad) {
+	return rad * 180 / Math.PI;
+}
+
 // initialize bikes
 const c1 = document.getElementById("bike1");
 redBike = new Bike('#ff0000',c1,RedBikeForm);
-redBike.updateStack(RedBikeForm);
-redBike.updateReach(RedBikeForm);
-redBike.update(     RedBikeForm);
+redBike.update(RedBikeForm);
 
 const c2 = document.getElementById("bike2");
 greBike = new Bike('#009900',c2,GreBikeForm);
-greBike.updateStack(GreBikeForm);
-greBike.updateReach(GreBikeForm);
-greBike.update(     GreBikeForm);
+greBike.update(GreBikeForm);
 
 const c3 = document.getElementById("bike3");
 bluBike = new Bike('#0000FF',c3,BluBikeForm);
-bluBike.updateStack(BluBikeForm);
-bluBike.updateReach(BluBikeForm);
-bluBike.update(     BluBikeForm);
+bluBike.update(BluBikeForm);
  
