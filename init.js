@@ -47,6 +47,12 @@ function deg2rad(deg) {
 function rad2deg(rad) {
 	return rad * 180 / Math.PI;
 }
+function magnitude() {
+	let total = 0;
+	for (let ij = 0; ij < arguments.length; ij++)
+		total += arguments[ij]**2;
+	return Math.sqrt(total);
+}
 
 // initialize bikes
 const c1 = document.getElementById("bike1");
