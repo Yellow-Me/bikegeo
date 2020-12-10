@@ -15,53 +15,49 @@
 //  Copyright 2014 Juha Virtakoivu
 
 // Some global variables
-var BB = [270,220];
-var mm2px = 0.3;
-var canvasWidth = 600;
-var canvasHeight = 320;
-var numOfDec = 0;
+const BB = [270, 220];
+const mm2px = 0.3;
+const canvasWidth = 600;
+const canvasHeight = 320;
+const numOfDec = 0;
 
 // Help toggle function
-var ch =  document.getElementById("help");
-var ctxh = ch.getContext("2d");
-var helpTogg = 0;
-var ph =  document.getElementById("helpPng");
+const ch = document.getElementById("help");
+const ctxh = ch.getContext("2d");
+let helpTogg = 0;
+const ph = document.getElementById("helpPng");
 
-window.onload = function ()
-{
-    // set onClick callback to help link
-    var hlpLnk = document.getElementById("helpLink");
-    hlpLnk.onclick = function ()
-    {
-	if (helpTogg)
-	{
-	    ctxh.clearRect(0,0,canvasWidth,canvasHeight);
-	    helpTogg = 0;
+window.onload = function () {
+	// set onClick callback to help link
+	const hlpLnk = document.getElementById("helpLink");
+	hlpLnk.onclick = function () {
+		if (helpTogg) {
+			ctxh.clearRect(0, 0, canvasWidth, canvasHeight);
+			helpTogg = 0;
+		} else {
+			helpTogg = 1;
+			ctxh.drawImage(ph, 0, 0);
+		}
 	}
-	else
-	{
-	    helpTogg = 1;
-	    ctxh.drawImage(ph,0,0);
-	}
-    }
+}
+
+function deg2rad(deg) {
+	return deg / 180 * Math.PI;
+}
+function rad2deg(rad) {
+	return rad * 180 / Math.PI;
 }
 
 // initialize bikes
-var c1 = document.getElementById("bike1");
-redBike = new bike('#ff0000',c1,RedBikeForm);
-redBike.updateStack(RedBikeForm);
-redBike.updateReach(RedBikeForm);
-redBike.update(     RedBikeForm);
+const c1 = document.getElementById("bike1");
+redBike = new Bike('#ff0000',c1,RedBikeForm);
+redBike.update(RedBikeForm);
 
-var c2 = document.getElementById("bike2");
-greBike = new bike('#009900',c2,GreBikeForm);
-greBike.updateStack(GreBikeForm);
-greBike.updateReach(GreBikeForm);
-greBike.update(     GreBikeForm);
+const c2 = document.getElementById("bike2");
+greBike = new Bike('#009900',c2,GreBikeForm);
+greBike.update(GreBikeForm);
 
-var c3 = document.getElementById("bike3");
-bluBike = new bike('#0000FF',c3,BluBikeForm);
-bluBike.updateStack(BluBikeForm);
-bluBike.updateReach(BluBikeForm);
-bluBike.update(     BluBikeForm);
+const c3 = document.getElementById("bike3");
+bluBike = new Bike('#0000FF',c3,BluBikeForm);
+bluBike.update(BluBikeForm);
  
