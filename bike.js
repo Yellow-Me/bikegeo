@@ -97,6 +97,13 @@ function Bike (color,cvs, form) {
 	this.wheelbase = function () {
 		return (this.frontAxle() - this.rearAxle());
 	}
+	
+	this.frontCenter = function() {
+		return Math.sqrt(this.bbDrop**2 + this.frontAxle()**2);
+	}
+	this.rearCenter = function() {
+		return Math.sqrt(this.csl**2 - this.bbDrop**2);
+	}
 
 	this.frontCenter = function () {
 		return Math.sqrt(this.bbDrop ** 2 + this.frontAxle() ** 2);
