@@ -36,12 +36,20 @@ function Bike (color,cvs, form) {
 			form.headTubeLength.value = Number(localStorage.getItem(this.color + "headTubeLength"));
 
 		}
+
 		if (localStorage.getItem(this.color + "forkLength")) {
 			form.forkLength.value = Number(localStorage.getItem(this.color + "forkLength"));
 		}
 		if (localStorage.getItem(this.color + "forkOffset")) {
 			form.forkOffset.value = Number(localStorage.getItem(this.color + "forkOffset"));
 		}
+		if (localStorage.getItem(this.color + "alternatForkLength")) {
+			form.forkLength.value = Number(localStorage.getItem(this.color + "alternatForkLength"));
+		}
+		if (localStorage.getItem(this.color + "alternateForkOffset")) {
+			form.forkOffset.value = Number(localStorage.getItem(this.color + "alternateForkOffset"));
+		}
+
 		if (localStorage.getItem(this.color + "bbDrop")) {
 			form.bbDrop.value = Number(localStorage.getItem(this.color + "bbDrop"));
 		}
@@ -178,8 +186,8 @@ function Bike (color,cvs, form) {
 		this.bikeMath.headTubeAngle = Number(form.headTubeAngle.value);
 		this.bikeMath.headTubeLength = Number(form.headTubeLength.value);
 		this.bikeMath.topTubeLength = Number(form.topTubeLength.value);
-		this.bikeMath.forkLength = Number(form.forkLength.value);
-		this.bikeMath.forkOffset = Number(form.forkOffset.value);
+		this.bikeMath.fork = new Fork(Number(form.forkLength.value), Number(form.forkOffset.value));
+		this.bikeMath.alternateFork = new Fork(Number(form.alternateForkLength.value), Number(form.alternateForkOffset.value));
 		this.bikeMath.bbDrop = Number(form.bbDrop.value);
 		this.bikeMath.spacers = Number(form.spacers.value);
 		this.bikeMath.stemLength = Number(form.stemLength.value);
@@ -209,8 +217,10 @@ function Bike (color,cvs, form) {
 		if (typeof (Storage) !== "undefined") {
 			localStorage.setItem(this.color + "headTubeAngle", this.bikeMath.headTubeAngle);
 			localStorage.setItem(this.color + "headTubeLength", this.bikeMath.headTubeLength);
-			localStorage.setItem(this.color + "forkLength", this.bikeMath.forkLength);
-			localStorage.setItem(this.color + "forkOffset", this.bikeMath.forkOffset);
+			localStorage.setItem(this.color + "forkLength", this.bikeMath.fork.forkLength);
+			localStorage.setItem(this.color + "forkOffset", this.bikeMath.fork.forkOffset);
+			localStorage.setItem(this.color + "alternateForkLength", this.bikeMath.alternateFork.forkLength);
+			localStorage.setItem(this.color + "alternateForkOffset", this.bikeMath.alternateFork.forkOffset);
 			localStorage.setItem(this.color + "bbDrop", this.bikeMath.bbDrop);
 			localStorage.setItem(this.color + "spacers", this.bikeMath.spacers);
 			localStorage.setItem(this.color + "stemLength", this.bikeMath.stemLength);
@@ -223,7 +233,16 @@ function Bike (color,cvs, form) {
 			localStorage.setItem(this.color + "crankLength", this.bikeMath.crankLength);
 			localStorage.setItem(this.color + "toeLength", this.bikeMath.toeLength);
 		}
-		// else do nothing
+	}
+
+	this.substituteFork = function() {
+		const showAlternateFork = form.useAlternateFork.value;
+		// TODO - Lock all angle fields
+		form.headTubeAngle.disabled = showAlternateFork;
+		form.seatTubeAngle.disabled = showAlternateFork;
+		form.bbDrop.disabled = showAlternateFork;
+		form.topTubeLength.disabled = showAlternateFork;
+		// TODO - Hide initial fork
 	}
 
 	// load bike data from local storage

@@ -71,6 +71,15 @@
                     <th class="input"><input type="text" name="name" size="10" value="Blue bike" form="BluBikeForm"
                                              style="color:#0000ff;" onChange="bluBike.saveName(BluBikeForm)"></th>
                 </tr>
+                <tr>
+                    <th class="label">Alternate Fork</th>
+                    <th class="input"><input type="checkbox" name="useAlternateFork" size="10" value="false" form="RedBikeForm"
+                                             style="color:#ff0000;" onChange="redBike.substituteFork(RedBikeForm)"></th>
+                    <th class="input"><input type="checkbox" name="useAlternateFork" size="10" value="false" form="GreBikeForm"
+                                             style="color:#009900;" onChange="greBike.substituteFork(GreBikeForm)"></th>
+                    <th class="input"><input type="checkbox" name="useAlternateFork" size="10" value="false" form="BluBikeForm"
+                                             style="color:#0000ff;" onChange="bluBike.substituteFork(BluBikeForm)"></th>
+                </tr>
                 </thead>
                 <tbody>
                 <tr>
@@ -101,7 +110,7 @@
                                              onChange="bluBike.update(BluBikeForm)"></td>
                 </tr>
                 <tr>
-                    <td>Fork length(3)</td>
+                    <td>Fork length(3.1)</td>
                     <td class="input"><input type="number" name="forkLength" value="396" min="0" max="999" form="RedBikeForm"
                                              onChange="redBike.update(RedBikeForm)"></td>
                     <td class="input"><input type="number" name="forkLength" value="0" min="0" max="999" form="GreBikeForm"
@@ -110,12 +119,30 @@
                                              onChange="bluBike.update(BluBikeForm)"></td>
                 </tr>
                 <tr>
-                    <td>Fork offset(4)</td>
+                    <td>Fork offset(3.2)</td>
                     <td class="input"><input type="number" name="forkOffset" value="47" min="0" max="999" form="RedBikeForm"
                                              onChange="redBike.update(RedBikeForm)"></td>
                     <td class="input"><input type="number" name="forkOffset" value="0" min="0" max="999" form="GreBikeForm"
                                              onChange="greBike.update(GreBikeForm)"></td>
                     <td class="input"><input type="number" name="forkOffset" value="0" min="0" max="999" form="BluBikeForm"
+                                             onChange="bluBike.update(BluBikeForm)"></td>
+                </tr>
+                <tr>
+                    <td>Alternate Fork length(3.3)</td>
+                    <td class="input"><input type="number" name="alternateForkLength" value="396" min="0" max="999" form="RedBikeForm"
+                                             onChange="redBike.update(RedBikeForm)"></td>
+                    <td class="input"><input type="number" name="alternateForkLength" value="0" min="0" max="999" form="GreBikeForm"
+                                             onChange="greBike.update(GreBikeForm)"></td>
+                    <td class="input"><input type="number" name="alternateForkLength" value="0" min="0" max="999" form="BluBikeForm"
+                                             onChange="bluBike.update(BluBikeForm)"></td>
+                </tr>
+                <tr>
+                    <td>Alternate Fork offset(3.4)</td>
+                    <td class="input"><input type="number" name="alternateForkOffset" value="47" min="0" max="999" form="RedBikeForm"
+                                             onChange="redBike.update(RedBikeForm)"></td>
+                    <td class="input"><input type="number" name="alternateForkOffset" value="0" min="0" max="999" form="GreBikeForm"
+                                             onChange="greBike.update(GreBikeForm)"></td>
+                    <td class="input"><input type="number" name="alternateForkOffset" value="0" min="0" max="999" form="BluBikeForm"
                                              onChange="bluBike.update(BluBikeForm)"></td>
                 </tr>
                 <tr>

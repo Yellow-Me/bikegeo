@@ -15,6 +15,16 @@
 //  Copyright 2014 Juha Virtakoivu
 
 
+function Fork(forkLength, forkOffset) {
+    this.forkLength = 396;
+    this.forkOffset = 47;
+
+    if (arguments.length === 2) {
+        this.forkLength = forkLength;
+        this.forkOffset = forkOffset;
+    }
+}
+
 // class handling all the math surrounding bikes
 function BikeGeometry () {
 
@@ -22,8 +32,8 @@ function BikeGeometry () {
         this.wheelSize = 622;
         this.tireSize = 25;
         this.bbDrop = 69;
-        this.forkLength = 396;
-        this.forkOffset = 47;
+        this.fork = new Fork();
+        this.alternateFork = new Fork();
         this.topTubeLength = 530;
         this.headTubeLength = 125;
         this.headTubeAngle = 71;
@@ -34,6 +44,13 @@ function BikeGeometry () {
         this.stemAngle = -9;
         this.toeLength = 100;
         this.crankLength = 172.5;
+    }
+
+    this.forkLength = function() {
+        return this.fork.forkLength;
+    }
+    this.forkOffset = function() {
+        return this.fork.forkOffset;
     }
 
     /* Geometry calculations */
@@ -47,8 +64,8 @@ function BikeGeometry () {
      * @returns front axle X position in BB space
      */
     this.frontAxle = function () {
-        return this.forkOffset / Math.cos(deg2rad(90 - this.headTubeAngle)) +
-            (this.headTubeLength + this.forkLength - this.forkOffset * Math.tan(deg2rad(90 - this.headTubeAngle))) * Math.cos(deg2rad(this.headTubeAngle)) +
+        return this.forkOffset() / Math.sin(deg2rad(this.headTubeAngle)) +
+            (this.headTubeLength + this.forkLength() - this.forkOffset() * Math.tan(deg2rad(90 - this.headTubeAngle))) * Math.cos(deg2rad(this.headTubeAngle)) +
             this.reach();
     }
     /**
@@ -78,7 +95,7 @@ function BikeGeometry () {
     }
 
     this.stack = function () {
-        return Math.sin(deg2rad(this.headTubeAngle)) * (this.headTubeLength + this.forkLength - this.forkOffset * Math.cos(deg2rad(this.headTubeAngle))) + this.bbDrop;
+        return Math.sin(deg2rad(this.headTubeAngle)) * (this.headTubeLength + this.forkLength() - this.forkOffset() * Math.cos(deg2rad(this.headTubeAngle))) + this.bbDrop;
     }
     this.stackWithSpacers = function () {
         return this.stack() + this.spacers * Math.sin(deg2rad(this.headTubeAngle));
@@ -90,7 +107,7 @@ function BikeGeometry () {
     }
 
     this.mechanicalTrail = function () {
-        return this.wheelAndTireRadius() * Math.cos(deg2rad(this.headTubeAngle)) - this.forkOffset;
+        return this.wheelAndTireRadius() * Math.cos(deg2rad(this.headTubeAngle)) - this.forkOffset();
     }
     this.groundTrail = function () {
         return this.mechanicalTrail() / Math.sin(deg2rad(this.headTubeAngle));
