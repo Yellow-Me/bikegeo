@@ -22,7 +22,7 @@ function Bike (color,cvs, form) {
 	this.context = cvs.getContext("2d");
 	this.canvas = cvs;
 
-	this.loadSavedData = function() {
+	this.loadSavedData = function () {
 		// if something isn't stored, form defaults are used
 		if (localStorage.getItem(this.color + "name")) {
 			form.name.value = localStorage.getItem(this.color + "name");
@@ -80,13 +80,13 @@ function Bike (color,cvs, form) {
 	/**
 	 * @returns rear axle X position in BB space
 	 */
-	this.rearAxle = function() {
+	this.rearAxle = function () {
 		return -Math.sqrt(this.csl * this.csl - this.bbDrop * this.bbDrop);
 	}
 	/**
 	 * @returns front axle X position in BB space
 	 */
-	this.frontAxle = function() {
+	this.frontAxle = function () {
 		return this.fo / Math.cos(deg2rad(90 - this.hta)) +
 			(this.htl + this.fl - this.fo * Math.tan(deg2rad(90 - this.hta))) * Math.cos(deg2rad(this.hta)) +
 			this.reach();
@@ -94,7 +94,7 @@ function Bike (color,cvs, form) {
 	/**
 	 * @returns wheelbase of bike
 	 */
-	this.wheelbase = function() {
+	this.wheelbase = function () {
 		return (this.frontAxle() - this.rearAxle());
 	}
 	
@@ -105,25 +105,32 @@ function Bike (color,cvs, form) {
 		return Math.sqrt(this.csl**2 - this.bbDrop**2);
 	}
 
-	this.reach = function() {
+	this.frontCenter = function () {
+		return Math.sqrt(this.bbDrop ** 2 + this.frontAxle() ** 2);
+	}
+	this.rearCenter = function () {
+		return Math.sqrt(this.csl ** 2 - this.bbDrop ** 2);
+	}
+
+	this.reach = function () {
 		return this.ttl - this.stack() * Math.tan(deg2rad(90 - this.sta));
 	}
-	this.reachWithSpacers = function() {
+	this.reachWithSpacers = function () {
 		return this.reach() - this.spacers * Math.cos(deg2rad(this.hta));
 	}
-	this.reachWithStem = function() {
+	this.reachWithStem = function () {
 		// convert stem angle to XY space
 		const stemAngleAct = deg2rad(90 - this.hta + this.sa);
 		return this.reachWithSpacers() + this.sl * Math.cos(stemAngleAct);
 	}
 
-	this.stack = function() {
+	this.stack = function () {
 		return Math.sin(deg2rad(this.hta)) * (this.htl + this.fl - this.fo * Math.cos(deg2rad(this.hta))) + this.bbDrop;
 	}
-	this.stackWithSpacers = function() {
+	this.stackWithSpacers = function () {
 		return this.stack() + this.spacers * Math.sin(deg2rad(this.hta));
 	}
-	this.stackWithStem = function() {
+	this.stackWithStem = function () {
 		// convert stem angle to XY space
 		const stemAngleAct = deg2rad(90 - this.hta + this.sa);
 		return this.stackWithSpacers() - this.sl * Math.sin(-stemAngleAct);
@@ -132,30 +139,30 @@ function Bike (color,cvs, form) {
 	this.mechanicalTrail = function () {
 		return this.wheelAndTireRadius() * Math.sin(deg2rad(90 - this.hta)) - this.fo;
 	}
-	this.groundTrail = function() {
+	this.groundTrail = function () {
 		return this.wheelAndTireRadius() / Math.tan(deg2rad(this.hta)) - this.fo / Math.sin(deg2rad(this.hta));
 	}
 	this.rearWheelTrail = function () {
 		return this.wheelbase() * Math.sin(deg2rad(this.hta)) + this.mechanicalTrail();
 	}
-	this.wheelAndTireRadius = function() {
-		return (this.ws + this.tireSize)/2;
+	this.wheelAndTireRadius = function () {
+		return (this.ws + this.tireSize) / 2;
 	}
-	this.toeOverlap = function() {
-		return Math.max(0, this.crankLength + this.wheelAndTireRadius() - Math.sqrt((this.frontAxle() - this.toeLength)**2 + this.bbDrop**2));
+	this.toeOverlap = function () {
+		return Math.max(0, this.crankLength + this.wheelAndTireRadius() - Math.sqrt((this.frontAxle() - this.toeLength) ** 2 + this.bbDrop ** 2));
 	}
 	this.drawBike = function () {
 		//this.canvas.clearRect(0,0, this.canvas.width, this.canvas.height);
 		this.canvas.width = this.canvas.width;
-		const ttY = BB[1] - this.stack()*mm2px; // Y coordinate of top tube
-		const seatX = BB[0] - (this.ttl - this.reach())*mm2px; // X of top of seat tube
-		const axleY = BB[1] - this.bbDrop*mm2px; // Y coordinate of axles
-		const rearAxle = this.rearAxle()* mm2px + BB[0]; // X of rear axle
-		const frontAxle = this.frontAxle()* mm2px + BB[0]; // X of front axle
+		const ttY = BB[1] - this.stack() * mm2px; // Y coordinate of top tube
+		const seatX = BB[0] - (this.ttl - this.reach()) * mm2px; // X of top of seat tube
+		const axleY = BB[1] - this.bbDrop * mm2px; // Y coordinate of axles
+		const rearAxle = this.rearAxle() * mm2px + BB[0]; // X of rear axle
+		const frontAxle = this.frontAxle() * mm2px + BB[0]; // X of front axle
 
 		// upper end of fork
-		const forkTX = BB[0] + (this.reach()+ this.htl * Math.cos(deg2rad(this.hta)))*mm2px;
-		const forkTY = ttY + this.htl * Math.sin(deg2rad(this.hta))*mm2px;
+		const forkTX = BB[0] + (this.reach() + this.htl * Math.cos(deg2rad(this.hta))) * mm2px;
+		const forkTY = ttY + this.htl * Math.sin(deg2rad(this.hta)) * mm2px;
 
 		// Drawing starts.
 		// front triangle
@@ -186,28 +193,28 @@ function Bike (color,cvs, form) {
 		this.context.lineWidth = 1;
 		this.context.fillStyle = "rgba(0,0,0,0.1)"
 		this.context.beginPath();
-		this.context.arc(rearAxle, axleY, this.ws / 2* mm2px, 0, 2 * Math.PI)
-		this.context.arc(rearAxle, axleY, this.wheelAndTireRadius()* mm2px, 0, 2 * Math.PI)
+		this.context.arc(rearAxle, axleY, this.ws / 2 * mm2px, 0, 2 * Math.PI)
+		this.context.arc(rearAxle, axleY, this.wheelAndTireRadius() * mm2px, 0, 2 * Math.PI)
 		this.context.fill();
 		this.context.stroke();
 
 		// front wheel
 		this.context.beginPath();
 		this.context.arc(frontAxle, axleY, this.ws / 2 * mm2px, 0, 2 * Math.PI)
-		this.context.arc(frontAxle, axleY, this.wheelAndTireRadius()* mm2px, 0, 2 * Math.PI)
+		this.context.arc(frontAxle, axleY, this.wheelAndTireRadius() * mm2px, 0, 2 * Math.PI)
 		this.context.fill();
 		this.context.stroke();
 
 		this.context.fillStyle = "rgba(128,0,128,0.1)"
 		this.context.setLineDash([5, 5])
 		this.context.beginPath();
-		this.context.arc(BB[0], BB[1], this.crankLength* mm2px, 0, 2 * Math.PI)
+		this.context.arc(BB[0], BB[1], this.crankLength * mm2px, 0, 2 * Math.PI)
 		this.context.fill();
 		this.context.stroke();
 		// Front of toe
-		this.context.setLineDash([1,5])
+		this.context.setLineDash([1, 5])
 		this.context.beginPath();
-		this.context.arc(BB[0]+this.toeLength*mm2px, BB[1], this.crankLength* mm2px, -Math.PI/4, Math.PI/4)
+		this.context.arc(BB[0] + this.toeLength * mm2px, BB[1], this.crankLength * mm2px, -Math.PI / 4, Math.PI / 4)
 		this.context.stroke();
 
 		this.saveBike(); // saves bike data to local storage
