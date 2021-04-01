@@ -85,6 +85,14 @@ function Bike (color,cvs, form) {
 		}
 	}
 
+	this.drawWheel = function (axleX, axleY) {
+		this.context.beginPath();
+		this.context.arc(axleX, axleY, this.bikeMath.wheelSize / 2 * mm2px, 0, 2 * Math.PI)
+		this.context.arc(axleX, axleY, this.bikeMath.wheelAndTireRadius() * mm2px, 0, 2 * Math.PI)
+		this.context.fill();
+		this.context.stroke();
+	}
+
 	this.drawBike = function () {
 		//this.canvas.clearRect(0,0, this.canvas.width, this.canvas.height);
 		this.canvas.width = this.canvas.width;
@@ -123,21 +131,11 @@ function Bike (color,cvs, form) {
 		this.context.lineWidth = 2;
 		this.context.stroke();
 
-		// rear wheel
+		// front & rear wheels
 		this.context.lineWidth = 1;
 		this.context.fillStyle = "rgba(0,0,0,0.1)"
-		this.context.beginPath();
-		this.context.arc(rearAxle, axleY, this.bikeMath.wheelSize / 2 * mm2px, 0, 2 * Math.PI)
-		this.context.arc(rearAxle, axleY, this.bikeMath.wheelAndTireRadius() * mm2px, 0, 2 * Math.PI)
-		this.context.fill();
-		this.context.stroke();
-
-		// front wheel
-		this.context.beginPath();
-		this.context.arc(frontAxle, axleY, this.bikeMath.wheelSize / 2 * mm2px, 0, 2 * Math.PI)
-		this.context.arc(frontAxle, axleY, this.bikeMath.wheelAndTireRadius() * mm2px, 0, 2 * Math.PI)
-		this.context.fill();
-		this.context.stroke();
+		this.drawWheel(rearAxle, axleY);
+		this.drawWheel(frontAxle, axleY);
 
 		this.context.fillStyle = "rgba(128,0,128,0.1)"
 		this.context.setLineDash([5, 5])
