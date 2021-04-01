@@ -33,7 +33,6 @@ function BikeGeometry () {
         this.tireSize = 25;
         this.bbDrop = 69;
         this.fork = new Fork();
-        this.alternateFork = new Fork();
         this.topTubeLength = 530;
         this.headTubeLength = 125;
         this.headTubeAngle = 71;

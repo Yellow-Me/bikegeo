@@ -22,95 +22,83 @@ function Bike (color,cvs, form) {
 	this.context = cvs.getContext("2d");
 	this.canvas = cvs;
 	this.bikeMath = new BikeGeometry();
+	this.alternateForkBikeMath = new BikeGeometry();
+
+	this.useAlternateFork = function() {
+		return form.useAlternateFork.checked;
+	}
+	this.selectiveBikeMath = function() {
+		if (this.useAlternateFork())
+			return this.alternateForkBikeMath;
+		else
+			return this.bikeMath;
+	}
+
+	this.loadDataItem = function (formItem, itemName) {
+		const key = this.color + itemName;
+		if (localStorage.getItem(key)) {
+			formItem.value = Number(localStorage.getItem(key))
+		}
+	}
 
 	this.loadSavedData = function () {
 		// if something isn't stored, form defaults are used
-		if (localStorage.getItem(this.color + "name")) {
-			form.name.value = localStorage.getItem(this.color + "name");
-		}
+		this.loadDataItem(form.name, "name");
 
-		if (localStorage.getItem(this.color + "headTubeAngle")) {
-			form.headTubeAngle.value = Number(localStorage.getItem(this.color + "headTubeAngle"));
-		}
-		if (localStorage.getItem(this.color + "headTubeLength")) {
-			form.headTubeLength.value = Number(localStorage.getItem(this.color + "headTubeLength"));
+		this.loadDataItem(form.headTubeAngle, "headTubeAngle");
+		this.loadDataItem(form.headTubeLength, "headTubeLength");
 
-		}
+		this.loadDataItem(form.forkLength, "forkLength");
+		this.loadDataItem(form.forkOffset, "forkOffset");
+		this.loadDataItem(form.alternateForkLength, "alternateForkLength");
+		this.loadDataItem(form.alternateForkOffset, "alternateForkOffset");
 
-		if (localStorage.getItem(this.color + "forkLength")) {
-			form.forkLength.value = Number(localStorage.getItem(this.color + "forkLength"));
-		}
-		if (localStorage.getItem(this.color + "forkOffset")) {
-			form.forkOffset.value = Number(localStorage.getItem(this.color + "forkOffset"));
-		}
-		if (localStorage.getItem(this.color + "alternatForkLength")) {
-			form.forkLength.value = Number(localStorage.getItem(this.color + "alternatForkLength"));
-		}
-		if (localStorage.getItem(this.color + "alternateForkOffset")) {
-			form.forkOffset.value = Number(localStorage.getItem(this.color + "alternateForkOffset"));
-		}
-
-		if (localStorage.getItem(this.color + "bbDrop")) {
-			form.bbDrop.value = Number(localStorage.getItem(this.color + "bbDrop"));
-		}
-		if (localStorage.getItem(this.color + "spacers")) {
-			form.spacers.value = Number(localStorage.getItem(this.color + "spacers"));
-		}
-		if (localStorage.getItem(this.color + "stemLength")) {
-			form.stemLength.value = Number(localStorage.getItem(this.color + "stemLength"));
-		}
-		if (localStorage.getItem(this.color + "stemAngle")) {
-			form.stemAngle.value = Number(localStorage.getItem(this.color + "stemAngle"));
-		}
-		if (localStorage.getItem(this.color + "seatTubeAngle")) {
-			form.seatTubeAngle.value = Number(localStorage.getItem(this.color + "seatTubeAngle"));
-		}
-		if (localStorage.getItem(this.color + "topTubeLength")) {
-			form.topTubeLength.value = Number(localStorage.getItem(this.color + "topTubeLength"));
-		}
-		if (localStorage.getItem(this.color + "wheelSize")) {
-			form.wheelSize.value = Number(localStorage.getItem(this.color + "wheelSize"));
-		}
-		if (localStorage.getItem(this.color + "chainstayLength")) {
-			form.chainstayLength.value = Number(localStorage.getItem(this.color + "chainstayLength"));
-		}
-		if (localStorage.getItem(this.color + "tireSize")) {
-			form.tireSize.value = Number(localStorage.getItem(this.color + "tireSize"));
-		}
-		if (localStorage.getItem(this.color + "crankLength")) {
-			form.crankLength.value = Number(localStorage.getItem(this.color + "crankLength"));
-		}
-		if (localStorage.getItem(this.color + "toeLength")) {
-			form.toeLength.value = Number(localStorage.getItem(this.color + "toeLength"));
-		}
+		this.loadDataItem(form.bbDrop, "bbDrop");
+		this.loadDataItem(form.spacers, "spacers");
+		this.loadDataItem(form.stemAngle, "stemAngle");
+		this.loadDataItem(form.stemLength, "stemLength");
+		this.loadDataItem(form.seatTubeAngle, "seatTubeAngle");
+		this.loadDataItem(form.topTubeLength, "topTubeLength");
+		this.loadDataItem(form.wheelSize, "wheelSize");
+		this.loadDataItem(form.chainstayLength, "chainstayLength");
+		this.loadDataItem(form.tireSize, "tireSize");
+		this.loadDataItem(form.crankLength, "crankLength");
+		this.loadDataItem(form.toeLength, "toeLength");
 	}
 
 	this.drawWheel = function (axleX, axleY) {
 		this.context.beginPath();
-		this.context.arc(axleX, axleY, this.bikeMath.wheelSize / 2 * mm2px, 0, 2 * Math.PI)
-		this.context.arc(axleX, axleY, this.bikeMath.wheelAndTireRadius() * mm2px, 0, 2 * Math.PI)
+		this.context.arc(axleX, axleY, this.selectiveBikeMath().wheelSize / 2 * mm2px, 0, 2 * Math.PI)
+		this.context.arc(axleX, axleY, this.selectiveBikeMath().wheelAndTireRadius() * mm2px, 0, 2 * Math.PI)
 		this.context.fill();
 		this.context.stroke();
 	}
 
-	this.drawBike = function () {
-		//this.canvas.clearRect(0,0, this.canvas.width, this.canvas.height);
+	this.drawFrame = function () {
+		// This exploits a refresh side effect
 		this.canvas.width = this.canvas.width;
-		const ttY = BB[1] - this.bikeMath.stack() * mm2px; // Y coordinate of top tube
-		const seatX = BB[0] - (this.bikeMath.topTubeLength - this.bikeMath.reach()) * mm2px; // X of top of seat tube
-		const axleY = BB[1] - this.bikeMath.bbDrop * mm2px; // Y coordinate of axles
-		const rearAxle = this.bikeMath.rearAxle() * mm2px + BB[0]; // X of rear axle
-		const frontAxle = this.bikeMath.frontAxle() * mm2px + BB[0]; // X of front axle
+
+		this.drawBike(this.bikeMath, this.color, [1, 0]);
+		if (this.useAlternateFork())
+			this.drawBike(this.alternateForkBikeMath, this.color, [0.5, 0.5]);
+	}
+
+	this.drawBike = function (bike, color, lineDash) {
+		const ttY = BB[1] - bike.stack() * mm2px; // Y coordinate of top tube
+		const seatX = BB[0] - (bike.topTubeLength - bike.reach()) * mm2px; // X of top of seat tube
+		const axleY = BB[1] - bike.bbDrop * mm2px; // Y coordinate of axles
+		const rearAxle = bike.rearAxle() * mm2px + BB[0]; // X of rear axle
+		const frontAxle = bike.frontAxle() * mm2px + BB[0]; // X of front axle
 
 		// upper end of fork
-		const forkTX = BB[0] + (this.bikeMath.reach() + this.bikeMath.headTubeLength * Math.cos(deg2rad(this.bikeMath.headTubeAngle))) * mm2px;
-		const forkTY = ttY + this.bikeMath.headTubeLength * Math.sin(deg2rad(this.bikeMath.headTubeAngle)) * mm2px;
+		const forkTX = BB[0] + (bike.reach() + bike.headTubeLength * Math.cos(deg2rad(bike.headTubeAngle))) * mm2px;
+		const forkTY = ttY + bike.headTubeLength * Math.sin(deg2rad(bike.headTubeAngle)) * mm2px;
 
 		// Drawing starts.
 		// front triangle
 		this.context.moveTo(BB[0], BB[1]); // start from bottom bracket
 		this.context.lineTo(seatX, ttY); // seat tube
-		this.context.lineTo(BB[0] + this.bikeMath.reach() * mm2px, ttY); // top tube
+		this.context.lineTo(BB[0] + bike.reach() * mm2px, ttY); // top tube
 		this.context.lineTo(forkTX, forkTY) // head tube
 		this.context.lineTo(BB[0], BB[1]); // down tube
 
@@ -123,12 +111,13 @@ function Bike (color,cvs, form) {
 		this.context.lineTo(frontAxle, axleY);
 
 		// stem and spacers
-		this.context.moveTo(BB[0] + this.bikeMath.reach() * mm2px, ttY); // top tube
-		this.context.lineTo(BB[0] + this.bikeMath.reachWithSpacers() * mm2px, BB[1] - this.bikeMath.stackWithSpacers() * mm2px);
-		this.context.lineTo(BB[0] + this.bikeMath.reachWithStem() * mm2px, BB[1] - this.bikeMath.stackWithStem() * mm2px);
+		this.context.moveTo(BB[0] + bike.reach() * mm2px, ttY); // top tube
+		this.context.lineTo(BB[0] + bike.reachWithSpacers() * mm2px, BB[1] - bike.stackWithSpacers() * mm2px);
+		this.context.lineTo(BB[0] + bike.reachWithStem() * mm2px, BB[1] - bike.stackWithStem() * mm2px);
 
-		this.context.strokeStyle = this.color;
+		this.context.strokeStyle = color;
 		this.context.lineWidth = 2;
+		this.context.setLineDash(lineDash);
 		this.context.stroke();
 
 		// front & rear wheels
@@ -140,65 +129,68 @@ function Bike (color,cvs, form) {
 		this.context.fillStyle = "rgba(128,0,128,0.1)"
 		this.context.setLineDash([5, 5])
 		this.context.beginPath();
-		this.context.arc(BB[0], BB[1], this.bikeMath.crankLength * mm2px, 0, 2 * Math.PI)
+		this.context.arc(BB[0], BB[1], bike.crankLength * mm2px, 0, 2 * Math.PI)
 		this.context.fill();
 		this.context.stroke();
 		// Front of toe
 		this.context.setLineDash([1, 5])
 		this.context.beginPath();
-		this.context.arc(BB[0] + this.bikeMath.toeLength * mm2px, BB[1], this.bikeMath.crankLength * mm2px, -Math.PI / 4, Math.PI / 4)
+		this.context.arc(BB[0] + bike.toeLength * mm2px, BB[1], bike.crankLength * mm2px, -Math.PI / 4, Math.PI / 4)
 		this.context.stroke();
-
-		this.saveBike(); // saves bike data to local storage
 	}
 
 	// update the form
 	this.updateForm = function (form) {
 		// update outputs to form
-		form.reach.value = this.bikeMath.reach().toFixed(numOfDec);
-		form.reachWspc.value = (this.bikeMath.reachWithSpacers()).toFixed(numOfDec);
-		form.reachWstm.value = (this.bikeMath.reachWithStem()).toFixed(numOfDec);
+		form.reach.value = this.selectiveBikeMath().reach().toFixed(numOfDec);
+		form.reachWspc.value = (this.selectiveBikeMath().reachWithSpacers()).toFixed(numOfDec);
+		form.reachWstm.value = (this.selectiveBikeMath().reachWithStem()).toFixed(numOfDec);
 
 		// update outputs to form
-		form.stack.value = this.bikeMath.stack().toFixed(numOfDec);
-		form.stackWspc.value = (this.bikeMath.stackWithSpacers()).toFixed(numOfDec);
-		form.stackWstm.value = (this.bikeMath.stackWithStem()).toFixed(numOfDec);
+		form.stack.value = this.selectiveBikeMath().stack().toFixed(numOfDec);
+		form.stackWspc.value = (this.selectiveBikeMath().stackWithSpacers()).toFixed(numOfDec);
+		form.stackWstm.value = (this.selectiveBikeMath().stackWithStem()).toFixed(numOfDec);
 
 		// update outputs to form
-		form.toeOvlp.value = (this.bikeMath.toeOverlap()).toFixed(numOfDec);
-		form.groundTrail.value = (this.bikeMath.groundTrail()).toFixed(numOfDec);
-		form.mechTrail.value = (this.bikeMath.mechanicalTrail()).toFixed(numOfDec);
+		form.toeOvlp.value = (this.selectiveBikeMath().toeOverlap()).toFixed(numOfDec);
+		form.groundTrail.value = (this.selectiveBikeMath().groundTrail()).toFixed(numOfDec);
+		form.mechTrail.value = (this.selectiveBikeMath().mechanicalTrail()).toFixed(numOfDec);
 
-		form.wb.value = (this.bikeMath.wheelbase()).toFixed(numOfDec);
-		form.frontCenter.value = this.bikeMath.frontCenter().toFixed(numOfDec);
-		form.rearCenter.value = this.bikeMath.rearCenter().toFixed(numOfDec);
-		form.effectiveSafeDescentAngle.value = this.bikeMath.effectiveSafeDecentAngle().toFixed(numOfDec);
+		form.wb.value = (this.selectiveBikeMath().wheelbase()).toFixed(numOfDec);
+		form.frontCenter.value = this.selectiveBikeMath().frontCenter().toFixed(numOfDec);
+		form.rearCenter.value = this.selectiveBikeMath().rearCenter().toFixed(numOfDec);
+		form.effectiveSafeDescentAngle.value = this.selectiveBikeMath().effectiveSafeDecentAngle().toFixed(numOfDec);
+	}
+
+	this.updateBikeParameters = function (bike) {
+		bike.wheelSize = Number(form.wheelSize.value);
+		bike.chainstayLength = Number(form.chainstayLength.value);
+		bike.seatTubeAngle = Number(form.seatTubeAngle.value);
+		bike.headTubeAngle = Number(form.headTubeAngle.value);
+		bike.headTubeLength = Number(form.headTubeLength.value);
+		bike.topTubeLength = Number(form.topTubeLength.value);
+		bike.bbDrop = Number(form.bbDrop.value);
+		bike.spacers = Number(form.spacers.value);
+		bike.stemLength = Number(form.stemLength.value);
+		bike.stemAngle = Number(form.stemAngle.value);
+		bike.toeLength = Number(form.toeLength.value);
+		bike.crankLength = Number(form.crankLength.value);
+		bike.tireSize = Number(form.tireSize.value);
 	}
 
 	// update callback for data
 	this.update = function (form) {
 		// update values from form
-		this.bikeMath.wheelSize = Number(form.wheelSize.value);
-		this.bikeMath.chainstayLength = Number(form.chainstayLength.value);
-		this.bikeMath.seatTubeAngle = Number(form.seatTubeAngle.value);
-		this.bikeMath.headTubeAngle = Number(form.headTubeAngle.value);
-		this.bikeMath.headTubeLength = Number(form.headTubeLength.value);
-		this.bikeMath.topTubeLength = Number(form.topTubeLength.value);
+		this.updateBikeParameters(this.bikeMath);
+		this.updateBikeParameters(this.alternateForkBikeMath);
 		this.bikeMath.fork = new Fork(Number(form.forkLength.value), Number(form.forkOffset.value));
-		this.bikeMath.alternateFork = new Fork(Number(form.alternateForkLength.value), Number(form.alternateForkOffset.value));
-		this.bikeMath.bbDrop = Number(form.bbDrop.value);
-		this.bikeMath.spacers = Number(form.spacers.value);
-		this.bikeMath.stemLength = Number(form.stemLength.value);
-		this.bikeMath.stemAngle = Number(form.stemAngle.value);
-		this.bikeMath.toeLength = Number(form.toeLength.value);
-		this.bikeMath.crankLength = Number(form.crankLength.value);
-		this.bikeMath.tireSize = Number(form.tireSize.value);
+		this.alternateForkBikeMath.fork = new Fork(Number(form.alternateForkLength.value), Number(form.alternateForkOffset.value));
 
 		// calculate stack and reach. Reach calculation uses stack value.
 		this.updateForm(form);
-
+		this.saveBike();
 		// clear canvas and redraw the bike
-		this.drawBike();
+		this.drawFrame();
 	}
 
 	// update callback for bike name
@@ -207,7 +199,6 @@ function Bike (color,cvs, form) {
 		if (typeof (Storage) !== "undefined") {
 			localStorage.setItem(this.color + "name", form.name.value);
 		}
-		// else do nothing
 	}
 
 	// function for saving bike data(except name) to local storage
@@ -217,8 +208,8 @@ function Bike (color,cvs, form) {
 			localStorage.setItem(this.color + "headTubeLength", this.bikeMath.headTubeLength);
 			localStorage.setItem(this.color + "forkLength", this.bikeMath.fork.forkLength);
 			localStorage.setItem(this.color + "forkOffset", this.bikeMath.fork.forkOffset);
-			localStorage.setItem(this.color + "alternateForkLength", this.bikeMath.alternateFork.forkLength);
-			localStorage.setItem(this.color + "alternateForkOffset", this.bikeMath.alternateFork.forkOffset);
+			localStorage.setItem(this.color + "alternateForkLength", this.alternateForkBikeMath.fork.forkLength);
+			localStorage.setItem(this.color + "alternateForkOffset", this.alternateForkBikeMath.fork.forkOffset);
 			localStorage.setItem(this.color + "bbDrop", this.bikeMath.bbDrop);
 			localStorage.setItem(this.color + "spacers", this.bikeMath.spacers);
 			localStorage.setItem(this.color + "stemLength", this.bikeMath.stemLength);
@@ -240,7 +231,12 @@ function Bike (color,cvs, form) {
 		form.seatTubeAngle.disabled = showAlternateFork;
 		form.bbDrop.disabled = showAlternateFork;
 		form.topTubeLength.disabled = showAlternateFork;
-		// TODO - Hide initial fork
+
+		// calculate stack and reach. Reach calculation uses stack value.
+		this.updateForm(form);
+		this.saveBike();
+		// clear canvas and redraw the bike
+		this.drawFrame();
 	}
 
 	// load bike data from local storage
