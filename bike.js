@@ -234,8 +234,8 @@ function Bike (color,cvs, form) {
 	}
 
 	this.substituteFork = function() {
-		const showAlternateFork = form.useAlternateFork.value;
-		// TODO - Lock all angle fields
+		const showAlternateFork = form.useAlternateFork.checked;
+		// Lock all angle fields
 		form.headTubeAngle.disabled = showAlternateFork;
 		form.seatTubeAngle.disabled = showAlternateFork;
 		form.bbDrop.disabled = showAlternateFork;
