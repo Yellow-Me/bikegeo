@@ -40,7 +40,6 @@ function Bike (color,cvs, form) {
 			formItem.value = Number(localStorage.getItem(key))
 		}
 	}
-
 	this.loadSavedData = function () {
 		// if something isn't stored, form defaults are used
 		this.loadDataItem(form.name, "name");
@@ -73,7 +72,6 @@ function Bike (color,cvs, form) {
 		this.context.fill();
 		this.context.stroke();
 	}
-
 	this.drawFrame = function () {
 		// This exploits a refresh side effect
 		this.canvas.width = this.canvas.width;
@@ -82,7 +80,6 @@ function Bike (color,cvs, form) {
 		if (this.useAlternateFork())
 			this.drawBike(this.alternateForkBikeMath, this.color, [0.5, 0.5]);
 	}
-
 	this.drawBike = function (bike, color, lineDash) {
 		const ttY = BB[1] - bike.stack() * mm2px; // Y coordinate of top tube
 		const seatX = BB[0] - (bike.topTubeLength - bike.reach()) * mm2px; // X of top of seat tube
@@ -139,7 +136,6 @@ function Bike (color,cvs, form) {
 		this.context.stroke();
 	}
 
-	// update the form
 	this.updateForm = function (form) {
 		// update outputs to form
 		form.reach.value = this.selectiveBikeMath().reach().toFixed(numOfDec);
@@ -161,7 +157,6 @@ function Bike (color,cvs, form) {
 		form.rearCenter.value = this.selectiveBikeMath().rearCenter().toFixed(numOfDec);
 		form.effectiveSafeDescentAngle.value = this.selectiveBikeMath().effectiveSafeDecentAngle().toFixed(numOfDec);
 	}
-
 	this.updateBikeParameters = function (bike) {
 		bike.wheelSize = Number(form.wheelSize.value);
 		bike.chainstayLength = Number(form.chainstayLength.value);
@@ -177,8 +172,10 @@ function Bike (color,cvs, form) {
 		bike.crankLength = Number(form.crankLength.value);
 		bike.tireSize = Number(form.tireSize.value);
 	}
-
-	// update callback for data
+	/**
+	 * Callback for updating geometry
+	 * @param form
+	 */
 	this.update = function (form) {
 		// update values from form
 		this.updateBikeParameters(this.bikeMath);
@@ -192,16 +189,19 @@ function Bike (color,cvs, form) {
 		// clear canvas and redraw the bike
 		this.drawFrame();
 	}
-
-	// update callback for bike name
+	/**
+	 * Callback for saving bike name
+	 * @param form
+	 */
 	this.saveName = function (form) {
 		// save bike name to local storage
 		if (typeof (Storage) !== "undefined") {
 			localStorage.setItem(this.color + "name", form.name.value);
 		}
 	}
-
-	// function for saving bike data(except name) to local storage
+	/**
+	 * Callback for saving bike geometry
+	 */
 	this.saveBike = function () {
 		if (typeof (Storage) !== "undefined") {
 			localStorage.setItem(this.color + "headTubeAngle", this.bikeMath.headTubeAngle);
@@ -223,7 +223,9 @@ function Bike (color,cvs, form) {
 			localStorage.setItem(this.color + "toeLength", this.bikeMath.toeLength);
 		}
 	}
-
+	/**
+	 * Callback for enabling substitute fork visualization
+	 */
 	this.substituteFork = function() {
 		const showAlternateFork = form.useAlternateFork.checked;
 		// Lock all angle fields
@@ -231,6 +233,17 @@ function Bike (color,cvs, form) {
 		form.seatTubeAngle.disabled = showAlternateFork;
 		form.bbDrop.disabled = showAlternateFork;
 		form.topTubeLength.disabled = showAlternateFork;
+
+		// Solve for the rotated frame
+		let rotate_function = (x0) => {
+			let rotateFrame = this.alternateForkBikeMath.rotateFrame(x0);
+			// Fork Y position
+			return rotateFrame.RA_FA[1];
+		}
+
+		let frameAngle = NewtonRaphson(rotate_function, 0.0);
+		// With the frame angle, adjust everything.
+		this.alternateForkBikeMath.assignRotation(frameAngle);
 
 		// calculate stack and reach. Reach calculation uses stack value.
 		this.updateForm(form);
