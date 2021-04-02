@@ -135,9 +135,50 @@ function BikeGeometry () {
         return Math.max(0, minSafeDistance - magnitude(this.frontAxle() - this.toeLength, this.bbDrop));
     }
 
-    this.optimizedDesign = function() {
-        // TODO - Decide on the parameters
-        return
+
+    /**
+     * The functions which are used to calculate frame rotation.
+     */
+    this.rearAxleToBB = function () {
+        return [Math.sqrt(this.chainstayLength*this.chainstayLength - this.bbDrop*this.bbDrop),
+                -this.bbDrop];
+    }
+    this.rearAxleToSeatPost = function () {
+        const RA_UHS = this.rearAxleToUpperHeadset();
+        const UHS_SP = this.upperHeadsetToSeatPost();
+
+        return vectorAdd(RA_UHS, UHS_SP);
+    }
+    this.rearAxleToLowerHeadset = function() {
+        const RA_BB = this.rearAxleToBB();
+        const BB_UHS = this.BBToUpperHeadset();
+        const UHS_LHS = this.upperHeadsetToLowerHeadset();
+
+        return vectorAdd(RA_BB, BB_UHS, UHS_LHS);
+    }
+    this.rearAxleToUpperHeadset = function() {
+        const RA_BB = this.rearAxleToBB();
+        const BB_UHS = this.BBToUpperHeadset();
+
+        return vectorAdd(RA_BB, BB_UHS);
+    }
+    this.rearAxleToFrontAxle = function() {
+        const RA_LHS = this.rearAxleToLowerHeadset();
+        const LHS_FA = this.lowerHeadsetToFrontAxle();
+
+        return vectorAdd(RA_LHS, LHS_FA);
+    }
+    this.BBToUpperHeadset = function() {
+        return [this.reach(), this.stack()];
+    }
+    this.upperHeadsetToSeatPost = function() {
+        return [-this.topTubeLength, 0];
+    }
+    this.upperHeadsetToLowerHeadset = function() {
+        return [this.headTubeLength*Math.cos(deg2rad(this.headTubeAngle)), -this.headTubeLength*Math.sin(deg2rad(this.headTubeAngle))];
+    }
+    this.lowerHeadsetToFrontAxle = function() {
+        return [this.forkLength()*Math.cos(deg2rad(this.headTubeAngle)) + this.forkOffset()*Math.sin(deg2rad(this.headTubeAngle))];
     }
 
     this.defaultValues();
