@@ -25,6 +25,11 @@ function Fork(forkLength, forkOffset) {
     }
 }
 
+const RotationLocations = {
+    REARAXLE: "rear_axle",
+    BB: "BB",
+}
+
 // class handling all the math surrounding bikes
 function BikeGeometry () {
 
@@ -137,7 +142,7 @@ function BikeGeometry () {
 
 
     /**
-     * The functions which are used to calculate frame rotation.
+     * The functions which are used to calculate frame rotation. All return [X, Y] vector format
      */
     this.rearAxleToBB = function () {
         return [Math.sqrt(this.chainstayLength*this.chainstayLength - this.bbDrop*this.bbDrop),
@@ -179,6 +184,15 @@ function BikeGeometry () {
     }
     this.lowerHeadsetToFrontAxle = function() {
         return [this.forkLength()*Math.cos(deg2rad(this.headTubeAngle)) + this.forkOffset()*Math.sin(deg2rad(this.headTubeAngle))];
+    }
+
+    /**
+     * Rotate
+     * @param angle
+     * @returns frame geometry in a rotated configuration
+     */
+    this.rotateFrame = function(angle = 0.0, location = RotationLocations.REARAXLE) {
+
     }
 
     this.defaultValues();
