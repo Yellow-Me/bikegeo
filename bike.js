@@ -236,12 +236,15 @@ function Bike (color,cvs, form) {
 
 		// Solve for the rotated frame
 		let rotate_function = (x0) => {
-			let rotateFrame = this.alternateForkBikeMath.rotateFrame(x0);
+			// Rotate the stock frame, and then add the new fork.
+			let rotatedFrame = this.bikeMath.rearAxleToLowerHeadset();
+			let frontFork = math.add(rotatedFrame, this.alternateForkBikeMath.lowerHeadsetToFrontAxle());
+			frontFork = math.multiply(math.rotationMatrix(deg2rad(x0)), frontFork);
 			// Fork Y position
-			return rotateFrame.RA_FA[1];
+			return frontFork.get([1]);
 		}
 
-		let frameAngle = NewtonRaphson(rotate_function, 0.0);
+		let frameAngle = BisectionSearch(rotate_function, -10, 10);
 		// With the frame angle, adjust everything.
 		this.alternateForkBikeMath.assignRotation(frameAngle);
 

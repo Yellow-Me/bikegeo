@@ -167,18 +167,17 @@ function BikeGeometry () {
 
         return math.add(RA_UHS, UHS_SP);
     }
-    this.rearAxleToLowerHeadset = function() {
-        const RA_BB = this.rearAxleToBB();
-        const BB_UHS = this.BBToUpperHeadset();
-        const UHS_LHS = this.upperHeadsetToLowerHeadset();
-
-        return math.add(RA_BB, BB_UHS, UHS_LHS);
-    }
     this.rearAxleToUpperHeadset = function() {
         const RA_BB = this.rearAxleToBB();
         const BB_UHS = this.BBToUpperHeadset();
 
         return math.add(RA_BB, BB_UHS);
+    }
+    this.rearAxleToLowerHeadset = function() {
+        const RA_UHS = this.rearAxleToUpperHeadset();
+        const UHS_LHS = this.upperHeadsetToLowerHeadset();
+
+        return math.add(RA_UHS, UHS_LHS);
     }
     this.rearAxleToFrontAxle = function() {
         const RA_LHS = this.rearAxleToLowerHeadset();
@@ -193,7 +192,7 @@ function BikeGeometry () {
      * @returns frame geometry in a rotated configuration
      */
     this.rotateFrame = function(angle = 0.0, location = RotationLocations.REARAXLE) {
-        let rotate = math.rotationMatrix(angle * math.PI / 180.0);
+        let rotate = math.rotationMatrix(deg2rad(angle));
         switch (location) {
             case RotationLocations.REARAXLE:
                 let RA_BB  = math.multiply(rotate, this.rearAxleToBB());
@@ -221,24 +220,24 @@ function BikeGeometry () {
      */
     this.assignRotation = function(angle = 0.0) {
         let rotated = this.rotateFrame(angle);
-        this.topTubeLength = rotated.RA_UHS[0] - rotated.RA_SP[0];
-        this.bbDrop = Math.abs(rotated.RA_BB[1]);
+        this.topTubeLength = rotated.RA_UHS.get([0]) - rotated.RA_SP.get([0]);
+        this.bbDrop = Math.abs(rotated.RA_BB.get([1]));
         // this.chainstayLength stays the same
         // this.headTubeLength stays the same
-        let UHS_LHS = math.sub(rotated.RA_UHS,rotated.RA_LHS);
-        let BB_SP = math.sub(rotated.RA_BB, rotated.RA_SP);
-        this.headTubeAngle = rad2deg(math.abs(math.atan2(UHS_LHS[0], UHS_LHS[1])));
-        this.seatTubeAngle = 180 - rad2deg(math.atan2(BB_SP[0], BB_SP[1]));
+        let UHS_LHS = math.subtract(rotated.RA_UHS,rotated.RA_LHS);
+        let BB_SP = math.subtract(rotated.RA_BB, rotated.RA_SP);
+        this.headTubeAngle = rad2deg(math.abs(math.atan(UHS_LHS.get([1]) / UHS_LHS.get([0]))));
+        this.seatTubeAngle = rad2deg(math.abs(math.atan(BB_SP.get([1]) / BB_SP.get([0]))));
     }
 
     this.defaultValues();
 }
 
-function Derivative(fcn, x0, delta = 0.0001) {
-    return (-0.5*fcn(x0-delta) + 0.5*fcn(x0+delta));
+function Derivative(fcn, x0, delta = 0.000001) {
+    return (-fcn(x0 + 2 * delta) + 8 * fcn(x0 + delta) - 8 * fcn(x0 - delta) + fcn(x0 - 2 * delta)) / (12 * delta);
 }
 
-function NewtonRaphson(fcn, x0, epsilon = 0.001) {
+function NewtonRaphson(fcn, x0, epsilon = 0.00001) {
     let y0 = 100*epsilon;
     while (math.abs(y0) > epsilon) {
         y0 = fcn(x0);
@@ -246,4 +245,22 @@ function NewtonRaphson(fcn, x0, epsilon = 0.001) {
         x0 = x0 - y0 / yp0;
     }
     return x0;
+}
+
+function BisectionSearch(fcn, x0, x1, epsilon = 0.00001) {
+    let x = 0;
+    let y = epsilon * 100;
+    if (fcn(x0) / fcn(x1) > 0.0) {
+        throw Error("Function doesn't pass through 0")
+    }
+    while (math.abs(y) > epsilon) {
+        x = (x1 + x0) / 2
+        y = fcn(x)
+
+        if (y < 0.0)
+            x0 = x;
+        else
+            x1 = x;
+    }
+    return x;
 }
