@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <!--  This file is part of BikeGeo.
 
     BikeGeo is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 <html lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <meta name="keywords" content="stack, reach, bike, bicycle"> 
+  <meta name="keywords" content="stack, reach, bike, bicycle">
   <meta name="description" content="Bicycle stack and reach calculator with visualization.">
   <link rel="stylesheet" type="text/css" href="bikegeo.css">
   <title>Stack and reach calculator</title>
-</head> 
+</head>
 <body>
   <!-- hidden help image-->
   <div style="visibility:hidden;height:0">
@@ -32,7 +32,7 @@
     <div class = "LeftColumn" >
       <canvas id="bg" width="600" height="320" class="bike"
 	      style="z-index: 0;     background-color:#F8F8F8;">
-      </canvas> 
+      </canvas>
       <canvas id="bike1"  width="600" height="320" class="bike"
 	      style="z-index: 1;">
       </canvas>
@@ -57,7 +57,7 @@
     <form id="BluBikeForm"></form>
     <div class="RightColumn">
       <form name="BikesData" method="GET">
-	<table class="BikeInputTable"> 
+	<table class="BikeInputTable">
 	  <thead>
 	    <tr><th class="label">Bike</th>
 	      <th class="input"><input type="text" name="name" size="10" value="Red bike"   form="RedBikeForm" style="color:#ff0000;" onChange="redBike.saveName(RedBikeForm)"></th>
@@ -65,7 +65,7 @@
 	      <th class="input"><input type="text" name="name" size="10" value="Blue bike"  form="BluBikeForm" style="color:#0000ff;" onChange="bluBike.saveName(BluBikeForm)"></th></tr>
 	  </thead>
 	  <tbody>
-	    <tr><td>Wheel size(1)</td>  
+	    <tr><td>Wheel size(1)</td>
 	      <td class="input"><input type="number" name="ws"        value="622"     min="0" max="700" form="RedBikeForm" onChange="redBike.update(RedBikeForm)">     </td>
 	      <td class="input"><input type="number" name="ws"        value="0"     min="0" max="700" form="GreBikeForm" onChange="greBike.update(GreBikeForm)">     </td>
 	      <td class="input"><input type="number" name="ws"        value="0"    min="0" max="700" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)">     </td></tr>
@@ -73,49 +73,49 @@
 			<td class="input"><input type="number" name="tireSize" value="25"     min="0" max="200" form="RedBikeForm" onChange="redBike.update(RedBikeForm)">     </td>
 			<td class="input"><input type="number" name="tireSize" value="0"     min="0" max="200" form="GreBikeForm" onChange="greBike.update(GreBikeForm)">     </td>
 			<td class="input"><input type="number" name="tireSize" value="0"    min="0" max="200" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)">     </td></tr>
-	    <tr><td>BB drop(2)         </td>  
+	    <tr><td>BB drop(2)         </td>
 	      <td class="input"><input type="number" name="bbDrop"    value="69"      min="0" max="999" form="RedBikeForm" onChange="redBike.update(RedBikeForm)"></td>
 	      <td class="input"><input type="number" name="bbDrop"    value="0"      min="0" max="999" form="GreBikeForm" onChange="greBike.update(GreBikeForm)"></td>
-	      <td class="input"><input type="number" name="bbDrop"    value="0"     min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr> 
-	    <tr><td>Fork length(3)     </td>  
+	      <td class="input"><input type="number" name="bbDrop"    value="0"     min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr>
+	    <tr><td>Fork length(3)     </td>
 	      <td class="input"><input type="number" name="fl"        value="396"     min="0" max="999" form="RedBikeForm" onChange="redBike.update(RedBikeForm)"></td>
 	      <td class="input"><input type="number" name="fl"        value="0"     min="0" max="999" form="GreBikeForm" onChange="greBike.update(GreBikeForm)"></td>
-	      <td class="input"><input type="number" name="fl"        value="0"    min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr> 
-	    <tr><td>Fork offset(4)      </td>  
+	      <td class="input"><input type="number" name="fl"        value="0"    min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr>
+	    <tr><td>Fork offset(4)      </td>
 	      <td class="input"><input type="number" name="fo"        value="47"      min="0" max="999" form="RedBikeForm" onChange="redBike.update(RedBikeForm)"></td>
 	      <td class="input"><input type="number" name="fo"        value="0"      min="0" max="999" form="GreBikeForm" onChange="greBike.update(GreBikeForm)"></td>
-	      <td class="input"><input type="number" name="fo"        value="0"     min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr> 
-	    <tr><td>Top tube length(5) </td>  
+	      <td class="input"><input type="number" name="fo"        value="0"     min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr>
+	    <tr><td>Top tube length(5) </td>
 	      <td class="input"><input type="number" name="ttl"       value="530"     min="0" max="999" form="RedBikeForm" onChange="redBike.update(RedBikeForm)"></td>
 	      <td class="input"><input type="number" name="ttl"       value="0"     min="0" max="999" form="GreBikeForm" onChange="greBike.update(GreBikeForm)"></td>
-	      <td class="input"><input type="number" name="ttl"       value="0"    min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr> 
-	    <tr><td>Head tube length(6)</td>  
+	      <td class="input"><input type="number" name="ttl"       value="0"    min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr>
+	    <tr><td>Head tube length(6)</td>
 	      <td class="input"><input type="number" name="htl"       value="125"     min="0" max="999" form="RedBikeForm" onChange="redBike.update(RedBikeForm)"></td>
 	      <td class="input"><input type="number" name="htl"       value="0"     min="0" max="999" form="GreBikeForm" onChange="greBike.update(GreBikeForm)"></td>
-	      <td class="input"><input type="number" name="htl"       value="0"    min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr> 
-	    <tr><td>Head tube angle(7) </td>  
+	      <td class="input"><input type="number" name="htl"       value="0"    min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr>
+	    <tr><td>Head tube angle(7) </td>
 	      <td class="input"><input type="number" name="hta" step="0.1" value="71"  min="-90" max="90"  form="RedBikeForm" onChange="redBike.update(RedBikeForm)"></td>
 	      <td class="input"><input type="number" name="hta" step="0.1" value="0"  min="-90" max="90"  form="GreBikeForm" onChange="greBike.update(GreBikeForm)"></td>
-	      <td class="input"><input type="number" name="hta" step="0.1" value="0"  min="-90" max="90"  form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr> 
-	    <tr><td>Seat tube angle(8) </td>  
+	      <td class="input"><input type="number" name="hta" step="0.1" value="0"  min="-90" max="90"  form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr>
+	    <tr><td>Seat tube angle(8) </td>
 	      <td class="input"><input type="number" name="sta" step="0.1" value="74"    min="-90" max="90"  form="RedBikeForm" onChange="redBike.update(RedBikeForm)"></td>
 	      <td class="input"><input type="number" name="sta" step="0.1" value="0"  min="-90" max="90"  form="GreBikeForm" onChange="greBike.update(GreBikeForm)"></td>
-	      <td class="input"><input type="number" name="sta" step="0.1" value="0"  min="-90" max="90"  form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr> 
-	    <tr><td>Chainstay length(9)</td>  
+	      <td class="input"><input type="number" name="sta" step="0.1" value="0"  min="-90" max="90"  form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr>
+	    <tr><td>Chainstay length(9)</td>
 	      <td class="input"><input type="number" name="csl"       value="440"     min="0" max="999" form="RedBikeForm" onChange="redBike.update(RedBikeForm)">	  </td>
 	      <td class="input"><input type="number" name="csl"       value="0"     min="0" max="999" form="GreBikeForm" onChange="greBike.update(GreBikeForm)">	  </td>
-	      <td class="input"><input type="number" name="csl"       value="0"    min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)">     </td></tr>      
-	    <tr><td>Spacers height(10)</td>  
+	      <td class="input"><input type="number" name="csl"       value="0"    min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)">     </td></tr>
+	    <tr><td>Spacers height(10)</td>
 	      <td class="input"><input type="number" name="spacers"   value="35"      min="0" max="999" form="RedBikeForm" onChange="redBike.update(RedBikeForm)"></td>
 	      <td class="input"><input type="number" name="spacers"   value="0"      min="0" max="999" form="GreBikeForm" onChange="greBike.update(GreBikeForm)"></td>
-	      <td class="input"><input type="number" name="spacers"   value="0"     min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr>      
-	    <tr><td>Stem length(11)</td>  
+	      <td class="input"><input type="number" name="spacers"   value="0"     min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr>
+	    <tr><td>Stem length(11)</td>
  	      <td class="input"><input type="number" name="sl"        value="90"      min="0" max="999" form="RedBikeForm" onChange="redBike.update(RedBikeForm)"></td>
  	      <td class="input"><input type="number" name="sl"        value="0"      min="0" max="999" form="GreBikeForm" onChange="greBike.update(GreBikeForm)"></td>
-	      <td class="input"><input type="number" name="sl"        value="0"     min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr>      
-	    <tr><td>Stem angle(12)</td>  
-	      <td class="input"><input type="number" name="sa"        value="-9"      min="-90" max="90" form="RedBikeForm" onChange="redBike.update(RedBikeForm)"></td>      
-	      <td class="input"><input type="number" name="sa"        value="0"      min="-90" max="90" form="GreBikeForm" onChange="greBike.update(GreBikeForm)"></td>      
+	      <td class="input"><input type="number" name="sl"        value="0"     min="0" max="999" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr>
+	    <tr><td>Stem angle(12)</td>
+	      <td class="input"><input type="number" name="sa"        value="-9"      min="-90" max="90" form="RedBikeForm" onChange="redBike.update(RedBikeForm)"></td>
+	      <td class="input"><input type="number" name="sa"        value="0"      min="-90" max="90" form="GreBikeForm" onChange="greBike.update(GreBikeForm)"></td>
 	      <td class="input"><input type="number" name="sa"        value="0"      min="-90" max="90" form="BluBikeForm" onChange="bluBike.update(BluBikeForm)"></td></tr>
 		<tr><td>Toe length(20)</td>
 			<td class="input"><input type="number" name="toeLength"        value="100"      min="0" max="200" form="RedBikeForm" onChange="redBike.update(RedBikeForm)"></td>
@@ -177,21 +177,22 @@
 	      <td class="output"><output name="stackWstm" form="BluBikeForm"></output></td></tr>
 	  </tfoot>
 	</table>
+		  <button id="downloadJSON" onclick="saveJSON()">Download JSON</button>
       </form>
     </div>
     <script src="./init.js"></script>
     <div class="footer">
-      <p class="credits"> This web site was developed with free open source tools: 
+      <p class="credits"> This web site was developed with free open source tools:
 	<a href="http://www.gnu.org/software/emacs/"> Emacs</a>,
 	<a href="https://wiki.gnome.org/Apps/Dia">Dia</a>,  <BR>
 	<a href="https://wiki.debian.org/Iceweasel"> Iceweasel</a>
-	<a href="https://www.mozilla.org/firefox">(Firefox)</a>,  
+	<a href="https://www.mozilla.org/firefox">(Firefox)</a>,
 	<a href="https://wiki.gnome.org/Apps/Web">Epiphany</a> and
 	<a href="http://www.gimp.org/">GIMP</a>
-	packaged by 
+	packaged by
 	<a href="https://www.debian.org/">Debian project</a>.</p>
 
-      <p class="cr">Copyright 2014<a href="mailto:juha@bikegeo.net">Juha Virtakoivu</a> , 2020 Scott Phillips
+      <p class="cr">Copyright 2014<a href="mailto:juha@bikegeo.net">Juha Virtakoivu</a> , 2020 <a href="mailto:polygonguru@gmail.com">Scott Phillips</a>
 	<BR>
 	The source code is available at <a href="https://github.com/Yellow-Me/bikegeo">GitHub</a></p>
     </div>
