@@ -125,7 +125,7 @@ function Bike (color,cvs, form) {
 	}
 
 	this.stack = function () {
-		return Math.sin(deg2rad(this.hta)) * (this.htl + this.fl - this.fo * Math.cos(deg2rad(this.hta))) + this.bbDrop;
+		return Math.sin(deg2rad(this.hta)) * (this.htl + this.fl - this.fo / Math.tan(deg2rad(this.hta))) + this.bbDrop;
 	}
 	this.stackWithSpacers = function () {
 		return this.stack() + this.spacers * Math.sin(deg2rad(this.hta));
