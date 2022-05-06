@@ -48,6 +48,15 @@ function rad2deg(rad) {
 	return rad * 180 / Math.PI;
 }
 
+function saveJSON() {
+	const bikes = {'redBike': redBike, 'greenBike': greBike, 'blueBike': bluBike}
+	const blob = new Blob([JSON.stringify(bikes)],{type: 'text/json'});
+	let j = document.createElement("a")
+	j.download = "bikes.json"
+	j.href = URL.createObjectURL(blob)
+	j.click()
+}
+
 // initialize bikes
 const c1 = document.getElementById("bike1");
 redBike = new Bike('#ff0000',c1,RedBikeForm);
@@ -60,4 +69,3 @@ greBike.update(GreBikeForm);
 const c3 = document.getElementById("bike3");
 bluBike = new Bike('#0000FF',c3,BluBikeForm);
 bluBike.update(BluBikeForm);
- 
