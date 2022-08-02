@@ -14,67 +14,37 @@
 //
 //  Copyright 2014 Juha Virtakoivu
 
+function BikeData() {
+	this.name = "Default";
+	this.color = "gray";
+	this.hta = 71;
+	this.htl = 125;
+	this.fl = 396;
+	this.fo = 47;
+	this.bbDrop = 69;
+	this.spacers = 35;
+	this.sl = 90;
+	this.sa = -9;
+	this.sta = 74;
+	this.ttl = 530;
+	this.ws = 622;
+	this.csl = 440;
+	this.tireSize = 25;
+	this.crankLength = 172.5;
+	this.toeLength = 100;
+}
+
+Bike.prototype = Object.create(BikeData.prototype);
 
 // class handling stack and reach calculations and drawing of bikes
-function Bike (color,cvs, form) {
+function Bike(color, cvs, form) {
+
+	// extend from bike data
+	BikeData.call(this);
 
 	this.color = color;
 	this.context = cvs.getContext("2d");
 	this.canvas = cvs;
-
-	this.loadSavedData = function () {
-		// if something isn't stored, form defaults are used
-		if (localStorage.getItem(this.color + "name")) {
-			form.name.value = localStorage.getItem(this.color + "name");
-		}
-
-		if (localStorage.getItem(this.color + "hta")) {
-			form.hta.value = Number(localStorage.getItem(this.color + "hta"));
-		}
-		if (localStorage.getItem(this.color + "htl")) {
-			form.htl.value = Number(localStorage.getItem(this.color + "htl"));
-
-		}
-		if (localStorage.getItem(this.color + "fl")) {
-			form.fl.value = Number(localStorage.getItem(this.color + "fl"));
-		}
-		if (localStorage.getItem(this.color + "fo")) {
-			form.fo.value = Number(localStorage.getItem(this.color + "fo"));
-		}
-		if (localStorage.getItem(this.color + "bbDrop")) {
-			form.bbDrop.value = Number(localStorage.getItem(this.color + "bbDrop"));
-		}
-		if (localStorage.getItem(this.color + "spacers")) {
-			form.spacers.value = Number(localStorage.getItem(this.color + "spacers"));
-		}
-		if (localStorage.getItem(this.color + "sl")) {
-			form.sl.value = Number(localStorage.getItem(this.color + "sl"));
-		}
-		if (localStorage.getItem(this.color + "sa")) {
-			form.sa.value = Number(localStorage.getItem(this.color + "sa"));
-		}
-		if (localStorage.getItem(this.color + "sta")) {
-			form.sta.value = Number(localStorage.getItem(this.color + "sta"));
-		}
-		if (localStorage.getItem(this.color + "ttl")) {
-			form.ttl.value = Number(localStorage.getItem(this.color + "ttl"));
-		}
-		if (localStorage.getItem(this.color + "ws")) {
-			form.ws.value = Number(localStorage.getItem(this.color + "ws"));
-		}
-		if (localStorage.getItem(this.color + "csl")) {
-			form.csl.value = Number(localStorage.getItem(this.color + "csl"));
-		}
-		if (localStorage.getItem(this.color + "tireSize")) {
-			form.tireSize.value = Number(localStorage.getItem(this.color + "tireSize"));
-		}
-		if (localStorage.getItem(this.color + "crankLength")) {
-			form.crankLength.value = Number(localStorage.getItem(this.color + "crankLength"));
-		}
-		if (localStorage.getItem(this.color + "toeLength")) {
-			form.toeLength.value = Number(localStorage.getItem(this.color + "toeLength"));
-		}
-	}
 
 	/* Geometry calculations */
 	/**
@@ -152,8 +122,6 @@ function Bike (color,cvs, form) {
 		return Math.max(0, this.crankLength + this.wheelAndTireRadius() - Math.sqrt((this.frontAxle() - this.toeLength) ** 2 + this.bbDrop ** 2));
 	}
 	this.drawBike = function () {
-		//this.canvas.clearRect(0,0, this.canvas.width, this.canvas.height);
-		this.canvas.width = this.canvas.width;
 		const ttY = BB[1] - this.stack() * mm2px; // Y coordinate of top tube
 		const seatX = BB[0] - (this.ttl - this.reach()) * mm2px; // X of top of seat tube
 		const axleY = BB[1] - this.bbDrop * mm2px; // Y coordinate of axles
@@ -221,7 +189,7 @@ function Bike (color,cvs, form) {
 	}
 
 	// update the form
-	this.updateFormReach = function (form) {
+	this.updateFormReach = function () {
 		// update outputs to form
 		form.reach.value = this.reach().toFixed(numOfDec);
 		form.reachWspc.value = (this.reachWithSpacers()).toFixed(numOfDec);
@@ -229,7 +197,7 @@ function Bike (color,cvs, form) {
 	}
 
 	// update the form
-	this.updateFormStack = function (form) {
+	this.updateFormStack = function () {
 		// update outputs to form
 		form.stack.value = this.stack().toFixed(numOfDec);
 		form.stackWspc.value = (this.stackWithSpacers()).toFixed(numOfDec);
@@ -237,7 +205,7 @@ function Bike (color,cvs, form) {
 	}
 
 	// update the form
-	this.updateFormTrail = function (form) {
+	this.updateFormTrail = function () {
 		// update outputs to form
 		form.toeOvlp.value = (this.toeOverlap()).toFixed(numOfDec);
 		form.groundTrail.value = (this.groundTrail()).toFixed(numOfDec);
@@ -245,7 +213,7 @@ function Bike (color,cvs, form) {
 	}
 
 	// update callback for data
-	this.update = function (form) {
+	this.update = function () {
 		// update values from form
 		this.ws = Number(form.ws.value);
 		this.csl = Number(form.csl.value);
@@ -277,7 +245,7 @@ function Bike (color,cvs, form) {
 	}
 
 	// update callback for bike name
-	this.saveName = function (form) {
+	this.saveName = function () {
 		// save bike name to local storage
 		if (typeof (Storage) !== "undefined") {
 			localStorage.setItem(this.color + "name", form.name.value);
@@ -288,23 +256,37 @@ function Bike (color,cvs, form) {
 	// function for saving bike data(except name) to local storage
 	this.saveBike = function () {
 		if (typeof (Storage) !== "undefined") {
-			localStorage.setItem(this.color + "hta", this.hta);
-			localStorage.setItem(this.color + "htl", this.htl);
-			localStorage.setItem(this.color + "fl", this.fl);
-			localStorage.setItem(this.color + "fo", this.fo);
-			localStorage.setItem(this.color + "bbDrop", this.bbDrop);
-			localStorage.setItem(this.color + "spacers", this.spacers);
-			localStorage.setItem(this.color + "sl", this.sl);
-			localStorage.setItem(this.color + "sa", this.sa);
-			localStorage.setItem(this.color + "sta", this.sta);
-			localStorage.setItem(this.color + "ttl", this.ttl);
-			localStorage.setItem(this.color + "ws", this.ws);
-			localStorage.setItem(this.color + "csl", this.csl);
-			localStorage.setItem(this.color + "tireSize", this.tireSize);
-			localStorage.setItem(this.color + "crankLength", this.crankLength);
-			localStorage.setItem(this.color + "toeLength", this.toeLength);
+
+			Object.getOwnPropertyNames(this.prototype).forEach(
+				(propertyName) => {
+					localStorage.setItem(this.name + '_' + propertyName, this[propertyName]);
+				}, this
+			);
 		}
 		// else do nothing
+	}
+
+	// function to load saved data from local storage
+	this.loadSavedData = function () {
+		// if something isn't stored, bike data defaults are used
+		Object.getOwnPropertyNames(this.prototype).forEach(
+			(propertyName) => {
+				const val = localStorage.getItem(this.name + '_' + propertyName);
+				if(val) {
+					this[propertyName] = val;
+				}
+			}, this
+		);
+	}	
+
+	// function for update form data from model
+	this.updateForm() = function() {
+		Object.getOwnPropertyNames(this.prototype).forEach(
+			(propertyName) => {
+				form[propertyName].value = this[propertyName];
+			}, this
+		);		
+		
 	}
 
 	// load bike data from local storage
