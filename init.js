@@ -48,16 +48,15 @@ function rad2deg(rad) {
 	return rad * 180 / Math.PI;
 }
 
+// bike storage
+let bikes = [];
+
 // initialize bikes
-const c1 = document.getElementById("bike1");
-const redBike = new Bike('#ff0000', c1, RedBikeForm);
-redBike.update();
+if(localStorage.getItem("bikeIds")) {
+	const bikeIds = JSON.parse(localStorage.getItem("bikeIds"));
+	bikeIds.forEach(id => { addBike(id, bikes);	});
+} else {
+	addBike(uid(), bikes);
+}
 
-const c2 = document.getElementById("bike2");
-const greBike = new Bike('#009900', c2, GreBikeForm);
-greBike.update();
 
-const c3 = document.getElementById("bike3");
-const bluBike = new Bike('#0000FF', c3, BluBikeForm);
-bluBike.update();
- 

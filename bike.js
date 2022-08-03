@@ -14,9 +14,11 @@
 //
 //  Copyright 2014 Juha Virtakoivu
 
+//	Valentin Chirikov - bike addition, removal, save & load to file
+
 function BikeData() {
 	this.name = "Default";
-	this.color = "gray";
+	this.color = "#ff0000";
 	this.hta = 71;
 	this.htl = 125;
 	this.fl = 396;
@@ -34,23 +36,12 @@ function BikeData() {
 	this.toeLength = 100;
 }
 
-Bike.prototype = Object.create(BikeData.prototype);
-
-// class handling stack and reach calculations and drawing of bikes
-function Bike(color, cvs, form) {
-
-	// extend from bike data
-	BikeData.call(this);
-
-	this.color = color;
-	this.context = cvs.getContext("2d");
-	this.canvas = cvs;
-
+function BikeGeometryCalculations() {
 	/* Geometry calculations */
 	/**
 	 * @returns rear axle X position in BB space
 	 */
-	this.rearAxle = function () {
+	 this.rearAxle = function () {
 		return -Math.sqrt(this.csl * this.csl - this.bbDrop * this.bbDrop);
 	}
 	/**
@@ -121,7 +112,13 @@ function Bike(color, cvs, form) {
 	this.toeOverlap = function () {
 		return Math.max(0, this.crankLength + this.wheelAndTireRadius() - Math.sqrt((this.frontAxle() - this.toeLength) ** 2 + this.bbDrop ** 2));
 	}
+}
+
+function BikeGraphics() {
 	this.drawBike = function () {
+		// hack to reset canvas
+		this.context.canvas.width += 0;
+		
 		const ttY = BB[1] - this.stack() * mm2px; // Y coordinate of top tube
 		const seatX = BB[0] - (this.ttl - this.reach()) * mm2px; // X of top of seat tube
 		const axleY = BB[1] - this.bbDrop * mm2px; // Y coordinate of axles
@@ -184,9 +181,35 @@ function Bike(color, cvs, form) {
 		this.context.beginPath();
 		this.context.arc(BB[0] + this.toeLength * mm2px, BB[1], this.crankLength * mm2px, -Math.PI / 4, Math.PI / 4)
 		this.context.stroke();
-
-		this.saveBike(); // saves bike data to local storage
 	}
+}
+
+Bike.prototype = new BikeData();
+
+const uid = () =>
+  String(
+    Date.now().toString(32) +
+      Math.random().toString(16)
+  ).replace(/\./g, '')
+
+
+// class handling stack and reach calculations and drawing of bikes
+function Bike(id, cvs, form) {
+
+	if(id) { 
+		this.id = id; 
+	} else {
+		this.id = uid();
+	}
+	
+	this.context = cvs.getContext("2d");
+
+	// extend from bike data, calulations, graphics
+	BikeData.call(this);
+	BikeGeometryCalculations.call(this);
+	BikeGraphics.call(this);
+
+	this.data = Object.getPrototypeOf(this);
 
 	// update the form
 	this.updateFormReach = function () {
@@ -215,6 +238,7 @@ function Bike(color, cvs, form) {
 	// update callback for data
 	this.update = function () {
 		// update values from form
+		this.name = form.name.value;
 		this.ws = Number(form.ws.value);
 		this.csl = Number(form.csl.value);
 		this.sta = Number(form.sta.value);
@@ -230,6 +254,7 @@ function Bike(color, cvs, form) {
 		this.toeLength = Number(form.toeLength.value);
 		this.crankLength = Number(form.crankLength.value);
 		this.tireSize = Number(form.tireSize.value);
+		this.color = form.color.value;
 
 		// calculate stack and reach. Reach calculation uses stack value.
 		this.updateFormReach(form);
@@ -238,59 +263,216 @@ function Bike(color, cvs, form) {
 
 		// clear canvas and redraw the bike
 		this.drawBike();
+		 // save bike data to local storage
+		this.saveBike();
+
 		// update wheelbase, which is calculated in drawing function
 		form.wb.value = (this.wheelbase()).toFixed(numOfDec);
 		form.frontCenter.value = this.frontCenter().toFixed(numOfDec);
 		form.rearCenter.value = this.rearCenter().toFixed(numOfDec);
 	}
 
-	// update callback for bike name
-	this.saveName = function () {
-		// save bike name to local storage
-		if (typeof (Storage) !== "undefined") {
-			localStorage.setItem(this.color + "name", form.name.value);
-		}
-		// else do nothing
-	}
-
-	// function for saving bike data(except name) to local storage
+	// function to save data to local storage
 	this.saveBike = function () {
-		if (typeof (Storage) !== "undefined") {
+		const entries = Object.entries(this).filter( ([key, _value]) => { return key in this.data });
+		localStorage.setItem(this.id, JSON.stringify(Object.fromEntries(entries)));
+	}	
 
-			Object.getOwnPropertyNames(this.prototype).forEach(
-				(propertyName) => {
-					localStorage.setItem(this.name + '_' + propertyName, this[propertyName]);
-				}, this
-			);
-		}
-		// else do nothing
+	this.saveBikeToFile = function () {
+		this.saveBike();
+		const a = document.createElement("a");
+		const file = new Blob([localStorage.getItem(this.id)], {type: "application/json"});
+		a.href = URL.createObjectURL(file);
+		a.download = "bike_" + this.name;
+		a.click();
 	}
-
+	
 	// function to load saved data from local storage
 	this.loadSavedData = function () {
 		// if something isn't stored, bike data defaults are used
-		Object.getOwnPropertyNames(this.prototype).forEach(
-			(propertyName) => {
-				const val = localStorage.getItem(this.name + '_' + propertyName);
-				if(val) {
-					this[propertyName] = val;
-				}
-			}, this
-		);
+		if(localStorage.getItem(this.id)) {
+			const data = JSON.parse(localStorage.getItem(this.id));
+			for (const prop in data) { this[prop] = data[prop]; }
+		}
 	}	
 
+	// function to load saved file data
+	this.loadBikeFromFile = function () {
+		const files = form.loadHidden.files;
+		if(files.length > 0) {
+			const file = files[0];
+			file.text()
+				.then((value) => { 
+					localStorage.setItem(this.id, value); 
+					this.loadSavedData(); 
+					this.updateForm();})
+				.catch((err) => { 
+					console.log(err); 
+					alert("Error loading bike data, check web console log for details !"); });			
+		}
+	}
+
 	// function for update form data from model
-	this.updateForm() = function() {
-		Object.getOwnPropertyNames(this.prototype).forEach(
-			(propertyName) => {
-				form[propertyName].value = this[propertyName];
-			}, this
+	this.updateForm = function() {
+		Object.getOwnPropertyNames(this.data).forEach(
+			(propertyName) => { form[propertyName].value = this[propertyName]; }, this
 		);		
-		
+	}
+
+	this.remove = function() {
+		const bikeIds = [];
+		bikes.forEach((bike) => {if(bike !== this) bikeIds.push(bike.id)});
+		localStorage.setItem("bikeIds", JSON.stringify(bikeIds));
+		location.reload();
 	}
 
 	// load bike data from local storage
-	if (typeof (Storage) !== "undefined") {
-		this.loadSavedData();
-	}
+	this.loadSavedData();
 }
+
+// add new bike
+function addBike(id, bikes) {
+	const index = bikes.length;
+	const newBikeForm = addForm(index);
+	const newCanvas = addCanvas(index);
+
+	// add column header
+	addCell(row_bikes, "th", "input", "input",
+		{name: "name", form: newBikeForm.id, type: "text", value : "Bike " + index, onChange : "bikes[" + index + "].update()"});
+	// wheel size
+	addCell(row_ws, "td", "input", "input",
+		{name: "ws", form: newBikeForm.id, type: "number", min : 0, max : 700, onChange : "bikes[" + index + "].update()"});
+	// tire size
+	addCell(row_tireSize, "td", "input", "input",
+		{name: "tireSize", form: newBikeForm.id, type: "number", min : 0, max : 200, onChange : "bikes[" + index + "].update()"});
+	// bottom bracket drop
+	addCell(row_bbDrop, "td", "input", "input",
+		{name: "bbDrop", form: newBikeForm.id, type: "number", min : 0, max : 999, onChange : "bikes[" + index + "].update()"});	
+	// fort length
+	addCell(row_fl, "td", "input", "input",
+		{name: "fl", form: newBikeForm.id, type: "number", min : 0, max : 999, onChange : "bikes[" + index + "].update()"});	
+	// fork offset
+	addCell(row_fo, "td", "input", "input",
+		{name: "fo", form: newBikeForm.id, type: "number", min : 0, max : 999, onChange : "bikes[" + index + "].update()"});
+	addCell(row_ttl, "td", "input", "input",
+		{name: "ttl", form: newBikeForm.id, type: "number", min : 0, max : 999, onChange : "bikes[" + index + "].update()"});
+	addCell(row_htl, "td", "input", "input",
+		{name: "htl", form: newBikeForm.id, type: "number", min : 0, max : 999, onChange : "bikes[" + index + "].update()"});
+	addCell(row_hta, "td", "input", "input",
+		{name: "hta", form: newBikeForm.id, type: "number", step : 0.1, min : -90, max : 90, onChange : "bikes[" + index + "].update()"});
+	addCell(row_sta, "td", "input", "input",
+		{name: "sta", form: newBikeForm.id, type: "number", step : 0.1, min : -90, max : 90, onChange : "bikes[" + index + "].update()"});
+	addCell(row_csl, "td", "input", "input",
+		{name: "csl", form: newBikeForm.id, type: "number", min : 0, max : 999, onChange : "bikes[" + index + "].update()"});
+	addCell(row_spacers, "td", "input", "input",
+		{name: "spacers", form: newBikeForm.id, type: "number", min : 0, max : 999, onChange : "bikes[" + index + "].update()"});
+	addCell(row_sl, "td", "input", "input",
+		{name: "sl", form: newBikeForm.id, type: "number", min : 0, max : 999, onChange : "bikes[" + index + "].update()"});
+	addCell(row_sa, "td", "input", "input",
+		{name: "sa", form: newBikeForm.id, type: "number", min : -90, max : 90, onChange : "bikes[" + index + "].update()"});
+	addCell(row_toeLength, "td", "input", "input",
+		{name: "toeLength", form: newBikeForm.id, type: "number", min : 0, max : 200, onChange : "bikes[" + index + "].update()"});
+	addCell(row_crankLength, "td", "input", "input",
+		{name: "crankLength", form: newBikeForm.id, type: "number", step : 0.5, min : 100, max : 250, onChange : "bikes[" + index + "].update()"});
+	addCell(row_wb, "td", "output", "output", {name: "wb", form: newBikeForm.id});
+	addCell(row_frontCenter, "td", "output", "output", {name: "frontCenter", form: newBikeForm.id});
+	addCell(row_rearCenter, "td", "output", "output", {name: "rearCenter", form: newBikeForm.id});
+	addCell(row_toeOvlp, "td", "output", "output", {name: "toeOvlp", form: newBikeForm.id});
+	addCell(row_groundTrail, "td", "output", "output", {name: "groundTrail", form: newBikeForm.id});
+	addCell(row_mechTrail, "td", "output", "output", {name: "mechTrail", form: newBikeForm.id});
+	addCell(row_reach, "td", "output", "output", {name: "reach", form: newBikeForm.id});
+	addCell(row_stack, "td", "output", "output", {name: "stack", form: newBikeForm.id});
+	addCell(row_reachWspc, "td", "output", "output", {name: "reachWspc", form: newBikeForm.id});
+	addCell(row_stackWspc, "td", "output", "output", {name: "stackWspc", form: newBikeForm.id});
+	addCell(row_reachWstm, "td", "output", "output", {name: "reachWstm", form: newBikeForm.id});
+	addCell(row_stackWstm, "td", "output", "output", {name: "stackWstm", form: newBikeForm.id});
+	addCell(row_color, "td", "input", "input",
+		{name: "color", form: newBikeForm.id, type: "color", onChange : "bikes[" + index + "].update()"});
+
+	const controlsCell = document.createElement("td");
+	
+	const saveButton = document.createElement("input");
+	saveButton.setAttribute('name', "save");
+	saveButton.setAttribute('value', "Save");
+	saveButton.setAttribute('type', "button");
+	saveButton.setAttribute('form', newBikeForm.id);
+	saveButton.setAttribute('onclick', "bikes[" + index + "].saveBikeToFile()");
+
+	const loadHiddenButton = document.createElement("input");
+	loadHiddenButton.setAttribute('name', "loadHidden");
+	loadHiddenButton.setAttribute('type', "file");
+	loadHiddenButton.setAttribute('form', newBikeForm.id);
+	loadHiddenButton.setAttribute('style', "display: none;");
+	loadHiddenButton.setAttribute('accept', "application/json");
+	loadHiddenButton.setAttribute('onchange', "bikes[" + index + "].loadBikeFromFile()");
+
+	const loadButton = document.createElement("input");
+	loadButton.setAttribute('name', "load");
+	loadButton.setAttribute('type', "button");
+	loadButton.setAttribute('value', "Load");
+	loadButton.setAttribute('form', newBikeForm.id);
+	loadButton.setAttribute('onclick', `${newBikeForm.id}.loadHidden.click()`);
+
+	const removeButton = document.createElement("input");
+	removeButton.setAttribute('name', "remove");
+	removeButton.setAttribute('type', "button");
+	removeButton.setAttribute('value', "Del");
+	removeButton.setAttribute('form', newBikeForm.id);
+	removeButton.setAttribute('onclick', "bikes[" + index + "].remove()");
+
+	row_controls.appendChild(controlsCell);
+	controlsCell.appendChild(saveButton);		
+	controlsCell.appendChild(loadHiddenButton);		
+	controlsCell.appendChild(loadButton);		
+	controlsCell.appendChild(removeButton);		
+
+	const newBike = new Bike(id, newCanvas, newBikeForm);
+	newBike.updateForm();	
+	newBike.update();
+	bikes.push(newBike);
+
+	const bikeIds = [];
+	bikes.forEach((bike) => {bikeIds.push(bike.id)});
+	localStorage.setItem("bikeIds", JSON.stringify(bikeIds));
+}
+
+// add new virtual bike form
+function addForm(index) {
+	const newBikeForm = document.createElement("form");
+	newBikeForm.id = "bikeForm" + index;
+
+	bikeForms.appendChild(newBikeForm);
+
+	return newBikeForm;
+}
+
+// add new canvas
+function addCanvas(index) {
+	const canvases = document.getElementById("canvases");
+	const newCanvas = document.createElement("canvas");
+	newCanvas.id = "bike" + index;
+	newCanvas.width = 600;
+	newCanvas.height = 320;
+	newCanvas.className = "bike";
+	newCanvas.style = "z-index: " + (index + 1) + ";";
+
+	canvases.appendChild(newCanvas);
+
+	return newCanvas;
+}
+
+// add new table cell
+function addCell(row, cellTag, cellClass, elementTag, elementOptions) {
+	const newCell = document.createElement(cellTag);
+	newCell.className = cellClass;
+
+	const newElement = document.createElement(elementTag);
+
+	if(elementOptions) {
+		Object.entries(elementOptions).forEach(([key, value]) => { newElement.setAttribute(key, value); });
+	}
+
+	row.appendChild(newCell);
+	newCell.appendChild(newElement);
+}
+
